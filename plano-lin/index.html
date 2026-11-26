@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Plano visual da Lin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Poppins:wght@400;500;600&display=swap">
+<style>
+/* VOICE: acolhedor e claro, como um cardápio de casa feito à mão para uma pessoa
+   IDEA: um cardápio ilustrado de restaurante pequeno: cada opção é um prato com foto
+   PICTURE: cada cartão abre com a foto do prato; sem foto, um prato desenhado com os grupos de alimento
+   COLOUR and TYPE: design system da Lua (terra, sálvia, creme), Lora nos títulos e Poppins no texto
+   LAYOUT: barra de refeições fixa, uma faixa por refeição com cartões que deslizam no celular */
+:root{color-scheme:light dark;
+  --bg:light-dark(#FAF6F0,#1C1916);--paper:light-dark(#FFFFFF,#26221E);--ink:light-dark(#3B342E,#EFE7DD);
+  --muted:light-dark(#776C63,#B3A89C);--line:light-dark(#E7DCCF,#3A332D);
+  --terra:light-dark(#C4845A,#D99B72);--terra-ink:light-dark(#9C5F38,#E9B18D);--terra-soft:light-dark(#F3E3D6,#3C2B20);
+  --sage:light-dark(#8A9E7F,#A7BB9C);--sage-ink:light-dark(#5E7254,#B9CCAE);--sage-soft:light-dark(#E7EDE2,#28311F);
+  --g-prot:#C4845A;--g-carb:#E2B867;--g-leg:#8A9E7F;--g-fruta:#D9788A;--g-gord:#B7A35C;--g-liq:#E9DCC6}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Poppins,"DM Sans",system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Lora,Georgia,serif;font-weight:600;line-height:1.1;margin:0;text-wrap:balance}
+p{margin:0}
+a{color:var(--terra-ink)}
+:focus-visible{outline:2px solid var(--terra);outline-offset:3px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+
+header{padding-block:28px 22px}
+.head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px 28px;align-items:end}
+.logo{height:58px;width:auto;display:block;margin-bottom:18px}
+h1{font-size:clamp(34px,6vw,52px)}
+.sub{color:var(--muted);margin-top:10px;max-width:60ch}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:50%;display:inline-block}
+
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-block:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{flex:none;display:flex;align-items:baseline;gap:8px;min-height:44px;align-items:center;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink);text-decoration:none;font-size:15px}
+.tabs a b{font-weight:500;color:var(--terra-ink);font-variant-numeric:tabular-nums;font-size:13px}
+.tabs a.on{background:var(--terra);border-color:var(--terra);color:#fff}
+.tabs a.on b{color:#fff}
+html{scroll-padding-top:80px;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.meal{padding-block:36px 8px}
+.mhead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px 24px;flex-wrap:wrap;margin-bottom:16px}
+.mhead h2{font-size:clamp(28px,4vw,40px)}
+.mhead .time{font-family:Lora,Georgia,serif;font-size:30px;color:var(--terra-ink);font-variant-numeric:tabular-nums;line-height:1}
+.mhead p{color:var(--muted);flex-basis:100%;max-width:62ch}
+.row{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.ph{position:relative;aspect-ratio:4/3;background:var(--terra-soft);display:grid;place-items:center;overflow:hidden}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ph.nophoto img{display:none}
+.plate{width:62%;aspect-ratio:1;border-radius:50%;background:var(--paper);display:grid;place-items:center;box-shadow:0 10px 24px rgb(0 0 0 / .12),inset 0 0 0 10px var(--paper)}
+.plate div{width:78%;aspect-ratio:1;border-radius:50%}
+.glass{width:34%;aspect-ratio:3/5;border-radius:10px 10px 22px 22px;background:var(--paper);padding:10px 9px 14px;box-shadow:0 10px 24px rgb(0 0 0 / .12);display:flex}
+.glass div{flex:1;border-radius:6px 6px 16px 16px}
+.ph:not(.nophoto) .plate,.ph:not(.nophoto) .glass{display:none}
+.ph .hint{position:absolute;left:10px;bottom:8px;font-size:12px;color:var(--muted);background:color-mix(in srgb,var(--paper) 80%,transparent);padding:2px 8px;border-radius:999px}
+.ph:not(.nophoto) .hint{display:none}
+.body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:10px;flex:1}
+.body h3{font-size:21px}
+.items{list-style:none;margin:0;padding:0}
+.items li{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:6px 0;border-top:1px dotted var(--line);font-size:15px}
+.items li:first-child{border-top:0}
+.items i{width:9px;height:9px;border-radius:50%;transform:translateY(-1px)}
+.items em{font-style:normal;color:var(--terra-ink);font-size:13px;text-align:right;white-space:nowrap}
+.tip{margin-top:auto;font-size:14px;color:var(--sage-ink);background:var(--sage-soft);border-radius:10px;padding:9px 12px}
+
+.band{padding-block:40px}
+.band h2{font-size:clamp(26px,3.6vw,36px);margin-bottom:16px}
+.day{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.day li{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.day b{font-family:Lora,Georgia,serif;font-size:22px;color:var(--terra-ink);font-weight:600;white-space:nowrap}
+.day span{font-weight:500}
+.day small{color:var(--muted);font-size:14px}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.rule{border-radius:14px;padding:16px 18px;background:var(--paper);border:1px solid var(--line)}
+.rule h3{font-size:19px;margin-bottom:6px}
+.rule p{font-size:15px;color:var(--muted)}
+.rule.out{background:var(--terra-soft);border-color:transparent}
+.rule.go{background:var(--sage-soft);border-color:transparent}
+footer{padding-block:28px 40px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+@media(max-width:600px){
+  .head{grid-template-columns:1fr}
+  .row{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding-bottom:8px;margin-inline:calc(-1*max(16px,env(safe-area-inset-left)));padding-inline:max(16px,env(safe-area-inset-left))}
+  .row .card{flex:0 0 84%;scroll-snap-align:center}
+}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <img class="logo" src="logo.png" alt="Lua Leite Nutricionista">
+  <div class="head">
+    <div>
+      <h1>Plano visual da Lin</h1>
+      <p class="sub">Escolha uma opção em cada refeição: dentro da mesma refeição, todas valem o mesmo. As fotos são ilustrativas: o que vale é a lista de cada cartão.</p>
+    </div>
+    <div class="legend" id="legend" aria-label="Cores dos grupos de alimento"></div>
+  </div>
+</header>
+
+<nav aria-label="Refeições"><div class="wrap tabs" id="tabs"></div></nav>
+
+<main id="meals"></main>
+
+<section class="band wrap" id="dia">
+  <h2>O seu dia</h2>
+  <ul class="day">
+    <li><b>Ao acordar</b><span>Psyllium com água</span><small>1 colher de chá em 1 copo de água. Sol na varanda entre 8h e 10h.</small></li>
+    <li><b>9h30</b><span>Café da manhã</span><small>Com o probiótico.</small></li>
+    <li><b>13h</b><span>Almoço</span><small>Com a vitamina D.</small></li>
+    <li><b>17h</b><span>Lanche</span><small>Depois dos atendimentos.</small></li>
+    <li><b>21h</b><span>Jantar</span><small>Morno e simples.</small></li>
+    <li><b>Antes de dormir</b><span>Chá calmante</span><small>Hortelã-pimenta ou gengibre, com o magnésio.</small></li>
+  </ul>
+</section>
+
+<section class="band wrap" id="lembretes">
+  <h2>Para lembrar</h2>
+  <div class="rules">
+    <div class="rule out"><h3>Fica fora</h3><p>Ovo e tudo que leva ovo, leite e derivados, glúten. No rótulo, confira também o "pode conter".</p></div>
+    <div class="rule"><h3>Sabor sem alho e cebola</h3><p>Aqueça o azeite com alho amassado por 2 a 3 minutos e retire o alho. Use ervas frescas e a parte verde da cebolinha.</p></div>
+    <div class="rule go"><h3>Água</h3><p>Some 500 ml ao que você bebe hoje, chegando perto de 2 litros. Em dia de treino, um pouco mais.</p></div>
+    <div class="rule"><h3>Nos dias de dor</h3><p>Prefira as opções mornas e macias, como o caldo de abóbora. Fome pequena? A vitamina desce mais fácil que um prato.</p></div>
+  </div>
+</section>
+
+<footer class="wrap">Lua Leite · Nutricionista · CRN/DF 16507 · Nutrição para Mentes Diversas. Plano individual: as quantidades completas e as trocas estão no seu PDF. Fotos ilustrativas (Pexels): o prato da foto pode ter ingredientes que não estão no seu plano; vale sempre a lista do cartão.</footer>
+
+<script>
+{
+const G={prot:["Proteína","--g-prot"],carb:["Carboidrato","--g-carb"],leg:["Legumes","--g-leg"],fruta:["Fruta","--g-fruta"],gord:["Gordura boa","--g-gord"],liq:["Bebida","--g-liq"]};
+const MEALS=[
+ {id:"cafe",name:"Café da manhã",short:"Café",time:"9h30",note:"As vitaminas são a sua base; o cuscuz e a tapioca são as versões salgadas.",opts:[
+  {t:"Vitamina de banana e morango",glass:1,i:[["liq","Bebida de castanha-do-pará ou soja","200 ml"],["prot","Proteína de ervilha","20 g"],["fruta","Banana firme","1 média"],["fruta","Morango","5 unidades"],["gord","Abacate","2 col. sopa"],["carb","Aveia sem glúten","2 col. sopa rasas"],["gord","Chia","1 col. sopa"]],tip:"Bata tudo junto. A chia vai direto no liquidificador."},
+  {t:"Vitamina de mamão com abacate",glass:1,i:[["liq","Bebida de castanha-do-pará ou soja","200 ml"],["prot","Proteína de ervilha","20 g"],["fruta","Mamão picado","1 xícara"],["fruta","Morango","5 unidades"],["gord","Abacate","2 col. sopa"],["carb","Aveia sem glúten","2 col. sopa rasas"],["gord","Linhaça moída","1 col. sopa"],["gord","Chia","1 col. sopa"]]},
+  {t:"Cuscuz com frango",i:[["carb","Cuscuz de milho","1 pedaço grande"],["prot","Frango desfiado","3 col. sopa cheias"],["gord","Azeite por cima","1 col. sopa"],["fruta","Mamão","1 xícara"]],tip:"Pode regar com um caldinho caseiro sem alho e sem cebola."},
+  {t:"Tapioca com frango",i:[["carb","Goma de tapioca","4 col. sopa"],["prot","Frango desfiado","3 col. sopa cheias"],["gord","Azeite","1 col. sopa"],["fruta","Morango","7 unidades"]],tip:"Use a marca de tapioca que eu te indicar."}
+ ]},
+ {id:"almoco",name:"Almoço",short:"Almoço",time:"13h",note:"Legumes todos os dias, sempre cozidos.",opts:[
+  {t:"Frango, arroz e legumes",i:[["prot","Frango grelhado ou assado","1 filé pequeno"],["carb","Arroz branco","7 col. sopa"],["leg","Cenoura e abobrinha cozidas","1 xícara"],["gord","Azeite no prato","1 col. sopa"],["gord","Nozes de sobremesa","1 unidade"]]},
+  {t:"Carne com mandioca e abóbora",i:[["prot","Carne magra","1 bife pequeno"],["carb","Mandioca cozida","3 pedaços médios"],["leg","Abóbora cabotiá","1 xícara"],["gord","Azeite no prato","1 col. sopa"]]},
+  {t:"Peixe com batata e arroz",i:[["prot","Tilápia ou peixe branco","1 filé médio"],["carb","Batata cozida ou assada","1 grande"],["carb","Arroz branco","5 col. sopa"],["leg","Vagem e cenoura cozidas","1 xícara"],["gord","Azeite no prato","1 col. sopa cheia"]]},
+  {t:"Lombo com mix de raízes",i:[["prot","Lombo suíno assado","1 fatia média"],["carb","Arroz branco","5 col. sopa"],["carb","Batata-doce","½ xícara"],["leg","Chuchu e espinafre","1 xícara"],["gord","Azeite no prato","1 col. sopa"]],tip:"A batata-doce tem limite nesta fase: ½ xícara."}
+ ]},
+ {id:"lanche",name:"Lanche da tarde",short:"Lanche",time:"17h",note:"Se a fome estiver pequena, a vitamina desce mais fácil do que um prato.",opts:[
+  {t:"Vitamina pequena",glass:1,i:[["liq","Bebida de castanha-do-pará ou soja","150 ml"],["prot","Proteína de ervilha","15 g"],["fruta","Banana firme","1 média"],["carb","Aveia sem glúten","1 col. sopa"],["gord","Chia","1 col. sopa"]]},
+  {t:"Cuscuz com frango ou carne seca",i:[["carb","Cuscuz de milho","1 pedaço médio"],["prot","Frango ou carne seca desfiada","3 ou 2½ col. sopa"],["gord","Azeite","1 col. sobremesa"],["fruta","Mamão","1 xícara"]],tip:"Carne seca magra, dessalgada na véspera e cozida sem alho e cebola."},
+  {t:"Mandioca com carne seca",i:[["carb","Mandioca cozida","2 pedaços médios"],["prot","Carne seca ou frango desfiado","2 a 3 col. sopa"],["gord","Azeite","1 col. sobremesa"],["fruta","Morango","7 unidades"]],tip:"Cozinhe no fim de semana e guarde em potinhos."}
+ ]},
+ {id:"jantar",name:"Jantar",short:"Jantar",time:"21h",note:"Morno e simples. Cozinhar para o almoço e o jantar juntos facilita a semana.",opts:[
+  {t:"Repete o almoço, um pouco menor",i:[["prot","Frango, carne ou peixe","60 g"],["carb","Arroz branco","6 col. sopa"],["leg","Legumes cozidos","1 xícara"],["gord","Azeite no prato","1 col. sopa"]]},
+  {t:"Macarrão de arroz com carne",i:[["carb","Macarrão de arroz","1½ xícara"],["prot","Carne moída magra","3 col. sopa cheias"],["leg","Abobrinha e cenoura","1 xícara"],["gord","Azeite","1 col. sopa"]]},
+  {t:"Caldo de abóbora com carne",i:[["leg","Abóbora cabotiá","1½ xícara"],["carb","Mandioca","2 pedaços médios"],["prot","Carne desfiada","3 col. sopa cheias"],["leg","Espinafre","2 col. sopa"],["gord","Azeite para finalizar","1 col. sopa"]],tip:"Morno e macio: ótimo nos dias de intestino dolorido."},
+  {t:"Macarrão ou arroz com sardinha",i:[["carb","Macarrão de arroz ou arroz","1½ xícara ou 6 col. sopa"],["prot","Sardinha em lata","2 unidades"],["leg","Molho de tomate caseiro","½ xícara"],["leg","Abobrinha em cubos","½ xícara"],["gord","Azeite","1 col. sopa"]],tip:"Molho de tomate feito em casa: o pronto leva cebola e alho."}
+ ]},
+ {id:"ceia",name:"Ceia",short:"Ceia",time:"22h30",note:"Um chá antes de dormir. Erva-doce e camomila voltam depois da fase.",opts:[
+  {t:"Chá calmante",glass:1,i:[["liq","Chá de hortelã-pimenta ou gengibre","1 xícara"]],tip:"A hortelã ajuda a relaxar o intestino."}
+ ]}
+];
+// Fotos ilustrativas do Pexels, pelo número de cada foto. Sem número: fotos/<id>.jpg ou o prato desenhado.
+const PHOTO={"cafe-1":8743860,"cafe-2":3615219,"almoco-1":21822134,"almoco-2":3981486,"almoco-3":19239119,"almoco-4":792027,"lanche-1":5946800,"jantar-1":8996122,"jantar-2":6718705,"jantar-3":5662122,"jantar-4":17499948,"ceia-1":36183149};
+const PX=id=>`https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=700`;
+const src=k=>PHOTO[k]?PX(PHOTO[k]):`fotos/${k}.jpg`;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const col=k=>`var(${G[k][1]})`;
+function picture(o){
+  const groups=o.i.map(x=>x[0]);
+  if(o.glass){
+    const stops=groups.map((g,n)=>`${col(g)} ${n/groups.length*100}% ${(n+1)/groups.length*100}%`).join(",");
+    return `<div class="glass" aria-hidden="true"><div style="background:linear-gradient(to top,${stops})"></div></div>`;
+  }
+  const w={prot:3,carb:3,leg:3,fruta:2,gord:1,liq:1},tot=groups.reduce((a,g)=>a+w[g],0);let acc=0;
+  const stops=groups.map(g=>{const a=acc;acc+=w[g]/tot*360;return `${col(g)} ${a}deg ${acc}deg`}).join(",");
+  return `<div class="plate" aria-hidden="true"><div style="background:conic-gradient(${stops})"></div></div>`;
+}
+document.getElementById("legend").innerHTML=Object.values(G).map(([n,v])=>`<span><i style="background:var(${v})"></i>${n}</span>`).join("");
+document.getElementById("tabs").innerHTML=MEALS.map(m=>`<a href="#${m.id}" data-id="${m.id}">${m.short} <b>${m.time}</b></a>`).join("")+`<a href="#dia" data-id="dia">O seu dia</a>`;
+document.getElementById("meals").innerHTML=MEALS.map(m=>`
+<section class="meal wrap" id="${m.id}">
+  <div class="mhead"><div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap"><h2>${esc(m.name)}</h2><span class="time">${m.time}</span></div><p>${esc(m.note)}</p></div>
+  <div class="row">${m.opts.map((o,n)=>`
+    <article class="card">
+      <div class="ph nophoto">${picture(o)}<img src="${src(m.id+"-"+(n+1))}" alt="${esc(o.t)}" loading="lazy" referrerpolicy="no-referrer"><span class="hint">Opção ${n+1}</span></div>
+      <div class="body">
+        <h3>${esc(o.t)}</h3>
+        <ul class="items">${o.i.map(([g,f,q])=>`<li><i style="background:${col(g)}"></i><span>${esc(f)}</span><em>${esc(q)}</em></li>`).join("")}</ul>
+        ${o.tip?`<p class="tip">${esc(o.tip)}</p>`:""}
+      </div>
+    </article>`).join("")}</div>
+</section>`).join("");
+for(const img of document.querySelectorAll(".ph img")){
+  const ok=()=>{if(img.naturalWidth>0)img.parentElement.classList.remove("nophoto")};
+  img.addEventListener("load",ok);
+  if(img.complete)ok();
+}
+const links=[...document.querySelectorAll(".tabs a")];
+const io=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting){links.forEach(a=>a.classList.toggle("on",a.dataset.id===e.target.id));const on=links.find(a=>a.dataset.id===e.target.id);on&&on.scrollIntoView({block:"nearest",inline:"nearest"})}},{rootMargin:"-40% 0px -55% 0px"});
+for(const s of document.querySelectorAll("main section, #dia"))io.observe(s);
+}
+</script>
+</body>
+</html>
