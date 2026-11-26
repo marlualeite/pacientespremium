@@ -133,7 +133,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:14px;border-top:1px 
   </div>
 </section>
 
-<footer class="wrap">Lua Leite · Nutricionista · CRN/DF 16507 · Nutrição para Mentes Diversas. Plano individual: as quantidades completas e as trocas estão no seu PDF. Fotos ilustrativas (Pexels): o prato da foto pode ter ingredientes que não estão no seu plano; vale sempre a lista do cartão.</footer>
+<footer class="wrap">Lua Leite · Nutricionista · CRN/DF 16507 · Nutrição para Mentes Diversas. Plano individual: as quantidades completas e as trocas estão no seu PDF. Fotos ilustrativas (Pexels; fotos do cuscuz: André Koehne, CC BY-SA 4.0, via Wikimedia Commons): o prato da foto pode ter ingredientes que não estão no seu plano; vale sempre a lista do cartão.</footer>
 
 <script>
 {
@@ -167,8 +167,8 @@ const MEALS=[
  ]}
 ];
 // Ordem: foto própria em fotos/<id>.jpg; se não existir, a foto do Pexels; se não houver, o prato desenhado.
-const PHOTO={"cafe-1":8743860,"cafe-2":3615219,"cafe-4":11094180,"almoco-1":21822134,"almoco-2":3981486,"almoco-3":19239119,"almoco-4":792027,"lanche-1":5946800,"lanche-3":18303016,"jantar-1":28247014,"jantar-2":6718705,"jantar-3":5662122,"jantar-4":17499948,"ceia-1":463445};
-const PX=id=>`https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=700`;
+const PHOTO={"cafe-1":8743860,"cafe-2":3615219,"cafe-3":"https://commons.wikimedia.org/wiki/Special:FilePath/Cuscuz_nordestino.jpg?width=700","cafe-4":11094180,"almoco-1":21822134,"almoco-2":3981486,"almoco-3":19239119,"almoco-4":792027,"lanche-1":5946800,"lanche-2":"https://commons.wikimedia.org/wiki/Special:FilePath/Cuscuz_nordestino_(77719).jpg?width=700","lanche-3":18303016,"jantar-1":28247014,"jantar-2":6718705,"jantar-3":5662122,"jantar-4":17499948,"ceia-1":463445};
+const PX=id=>typeof id==="string"?id:`https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=700`;
 const src=k=>`fotos/${k}.jpg`;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const col=k=>`var(${G[k][1]})`;
