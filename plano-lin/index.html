@@ -44,8 +44,8 @@ nav{position:sticky;top:0;z-index:5;background:var(--bg);border-block:1px solid 
 .tabs a b{font-weight:500;color:var(--terra-ink);font-variant-numeric:tabular-nums;font-size:13px}
 .tabs a.on{background:var(--terra);border-color:var(--terra);color:#fff}
 .tabs a.on b{color:#fff}
-html{scroll-padding-top:80px;scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+html{scroll-padding-top:80px}
+
 
 .meal{padding-block:36px 8px}
 .mhead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px 24px;flex-wrap:wrap;margin-bottom:16px}
@@ -166,10 +166,10 @@ const MEALS=[
   {t:"Chá calmante",glass:1,i:[["liq","Chá de hortelã-pimenta ou gengibre","1 xícara"]],tip:"A hortelã ajuda a relaxar o intestino."}
  ]}
 ];
-// Fotos ilustrativas do Pexels, pelo número de cada foto. Sem número: fotos/<id>.jpg ou o prato desenhado.
-const PHOTO={"cafe-1":8743860,"cafe-2":3615219,"almoco-1":21822134,"almoco-2":3981486,"almoco-3":19239119,"almoco-4":792027,"lanche-1":5946800,"jantar-1":8996122,"jantar-2":6718705,"jantar-3":5662122,"jantar-4":17499948,"ceia-1":36183149};
+// Ordem: foto própria em fotos/<id>.jpg; se não existir, a foto do Pexels; se não houver, o prato desenhado.
+const PHOTO={"cafe-1":8743860,"cafe-2":3615219,"almoco-1":21822134,"almoco-2":3981486,"almoco-3":19239119,"almoco-4":792027,"lanche-1":5946800,"jantar-1":8996122,"jantar-2":6718705,"jantar-3":5662122,"jantar-4":17499948};
 const PX=id=>`https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=700`;
-const src=k=>PHOTO[k]?PX(PHOTO[k]):`fotos/${k}.jpg`;
+const src=k=>`fotos/${k}.jpg`;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const col=k=>`var(${G[k][1]})`;
 function picture(o){
@@ -189,7 +189,7 @@ document.getElementById("meals").innerHTML=MEALS.map(m=>`
   <div class="mhead"><div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap"><h2>${esc(m.name)}</h2><span class="time">${m.time}</span></div><p>${esc(m.note)}</p></div>
   <div class="row">${m.opts.map((o,n)=>`
     <article class="card">
-      <div class="ph nophoto">${picture(o)}<img src="${src(m.id+"-"+(n+1))}" alt="${esc(o.t)}" loading="lazy" referrerpolicy="no-referrer"><span class="hint">Opção ${n+1}</span></div>
+      <div class="ph nophoto">${picture(o)}<img src="${src(m.id+"-"+(n+1))}" data-k="${m.id}-${n+1}" alt="${esc(o.t)}" loading="lazy" referrerpolicy="no-referrer"><span class="hint">Opção ${n+1}</span></div>
       <div class="body">
         <h3>${esc(o.t)}</h3>
         <ul class="items">${o.i.map(([g,f,q])=>`<li><i style="background:${col(g)}"></i><span>${esc(f)}</span><em>${esc(q)}</em></li>`).join("")}</ul>
@@ -200,10 +200,12 @@ document.getElementById("meals").innerHTML=MEALS.map(m=>`
 for(const img of document.querySelectorAll(".ph img")){
   const ok=()=>{if(img.naturalWidth>0)img.parentElement.classList.remove("nophoto")};
   img.addEventListener("load",ok);
+  img.addEventListener("error",()=>{const k=img.dataset.k;if(PHOTO[k]&&!img.dataset.px){img.dataset.px=1;img.src=PX(PHOTO[k])}});
   if(img.complete)ok();
 }
 const links=[...document.querySelectorAll(".tabs a")];
-const io=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting){links.forEach(a=>a.classList.toggle("on",a.dataset.id===e.target.id));const on=links.find(a=>a.dataset.id===e.target.id);on&&on.scrollIntoView({block:"nearest",inline:"nearest"})}},{rootMargin:"-40% 0px -55% 0px"});
+const bar=document.getElementById("tabs");let cur="";
+const io=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting&&e.target.id!==cur){cur=e.target.id;links.forEach(a=>a.classList.toggle("on",a.dataset.id===cur));const on=links.find(a=>a.dataset.id===cur);if(on)bar.scrollTo({left:on.offsetLeft-bar.clientWidth/2+on.offsetWidth/2})}},{rootMargin:"-40% 0px -55% 0px"});
 for(const s of document.querySelectorAll("main section, #dia"))io.observe(s);
 }
 </script>
