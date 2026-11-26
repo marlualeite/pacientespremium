@@ -87,6 +87,15 @@ html{scroll-padding-top:80px}
 .rule p{font-size:15px;color:var(--muted)}
 .rule.out{background:var(--terra-soft);border-color:transparent}
 .rule.go{background:var(--sage-soft);border-color:transparent}
+.swaps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.swap{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.swap h3{font-size:20px;display:flex;align-items:center;gap:8px}
+.swap h3 i{width:11px;height:11px;border-radius:50%;flex:none}
+.swap .base{font-size:14px;color:var(--muted)}
+.swap ul{list-style:none;margin:0;padding:0}
+.swap li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:7px 0;border-top:1px dotted var(--line);font-size:15px;align-items:baseline}
+.swap li em{font-style:normal;color:var(--terra-ink);font-size:13px;text-align:right;white-space:nowrap}
+.swap .note{font-size:13px;color:var(--sage-ink);background:var(--sage-soft);border-radius:8px;padding:7px 10px;margin-top:auto}
 footer{padding-block:28px 40px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
 @media(max-width:600px){
   .head{grid-template-columns:1fr}
@@ -101,7 +110,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:14px;border-top:1px 
   <div class="head">
     <div>
       <h1>Plano visual da Lin</h1>
-      <p class="sub">Escolha uma opção em cada refeição: dentro da mesma refeição, todas valem o mesmo. As fotos são ilustrativas: o que vale é a lista de cada cartão.</p>
+      <p class="sub">Escolha uma opção em cada refeição: dentro da mesma refeição, todas valem o mesmo. No fim da página estão as trocas de cada alimento. As fotos são ilustrativas: o que vale é a lista de cada cartão.</p>
     </div>
     <div class="legend" id="legend" aria-label="Cores dos grupos de alimento"></div>
   </div>
@@ -110,6 +119,59 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:14px;border-top:1px 
 <nav aria-label="Refeições"><div class="wrap tabs" id="tabs"></div></nav>
 
 <main id="meals"></main>
+
+<section class="band wrap" id="trocas">
+  <h2>Trocas</h2>
+  <p class="sub" style="margin:-6px 0 18px">Cada item vale o mesmo que os outros do seu grupo. Troque à vontade, mantendo a quantidade indicada.</p>
+  <div class="swaps">
+    <div class="swap"><h3><i style="background:var(--g-prot)"></i>Proteínas</h3><p class="base">Em vez de 80 g de frango (1 filé pequeno)</p><ul>
+      <li><span>Carne moída magra</span><em>3½ col. sopa cheias · 70 g</em></li>
+      <li><span>Carne magra: patinho, músculo, filé</span><em>1 bife pequeno · 70 g</em></li>
+      <li><span>Tilápia, pescada ou merluza</span><em>1 filé médio · 100 g</em></li>
+      <li><span>Lombo ou filé suíno</span><em>1 fatia · 70 g</em></li>
+      <li><span>Carne seca magra, dessalgada</span><em>3 col. sopa cheias · 65 g</em></li>
+      <li><span>Sardinha em lata, escorrida</span><em>3 unidades</em></li>
+      <li><span>Tofu firme</span><em>1 fatia grossa · 150 g</em></li>
+    </ul><p class="note">Vale também ao contrário: onde o plano diz carne, pode ser frango.</p></div>
+    <div class="swap"><h3><i style="background:var(--g-carb)"></i>Carboidratos</h3><p class="base">Em vez de 5 col. sopa de arroz (120 g)</p><ul>
+      <li><span>Mandioca cozida</span><em>2 pedaços médios · 120 g</em></li>
+      <li><span>Batata inglesa</span><em>2 grandes · 280 g</em></li>
+      <li><span>Macarrão de arroz cozido</span><em>1 xícara · 110 g</em></li>
+      <li><span>Cuscuz de milho</span><em>1 pedaço médio · 120 g</em></li>
+      <li><span>Quinoa cozida</span><em>¾ xícara · 110 g</em></li>
+      <li><span>Batata-doce + arroz</span><em>½ xícara + 2 col. sopa</em></li>
+    </ul><p class="note">A batata-doce tem limite nesta fase: até ½ xícara por refeição.</p></div>
+    <div class="swap"><h3><i style="background:var(--g-fruta)"></i>Frutas</h3><p class="base">1 porção, no lugar de qualquer fruta do plano</p><ul>
+      <li><span>Banana firme, sem pintas</span><em>1 média</em></li>
+      <li><span>Mamão</span><em>1 xícara picado</em></li>
+      <li><span>Morango</span><em>5 a 7 unidades</em></li>
+      <li><span>Laranja ou tangerina</span><em>1 média</em></li>
+      <li><span>Abacaxi</span><em>1 xícara picado</em></li>
+      <li><span>Uva</span><em>15 uvas</em></li>
+    </ul><p class="note">Uma fruta por vez é o mais confortável para o intestino nesta fase.</p></div>
+    <div class="swap"><h3><i style="background:var(--g-gord)"></i>Gorduras boas</h3><p class="base">1 porção, no lugar do azeite ou do abacate</p><ul>
+      <li><span>Azeite</span><em>1 col. sopa</em></li>
+      <li><span>Abacate</span><em>2 col. sopa</em></li>
+      <li><span>Linhaça moída</span><em>1 col. sopa</em></li>
+      <li><span>Chia</span><em>1 col. sopa</em></li>
+      <li><span>Nozes ou macadâmia</span><em>4 a 5 unidades</em></li>
+      <li><span>Amendoim torrado sem sal</span><em>1 col. sopa cheia</em></li>
+      <li><span>Castanha-do-pará</span><em>1 a 2 unidades</em></li>
+    </ul><p class="note">Se usar a bebida de castanha-do-pará todo dia, no máximo 1 castanha inteira por dia.</p></div>
+    <div class="swap"><h3><i style="background:var(--g-leg)"></i>Legumes</h3><p class="base">Troque entre si, sempre cozidos</p><ul>
+      <li><span>Cenoura, abobrinha, chuchu</span><em>1 xícara</em></li>
+      <li><span>Abóbora cabotiá</span><em>1 xícara</em></li>
+      <li><span>Vagem, berinjela</span><em>1 xícara</em></li>
+      <li><span>Espinafre refogado</span><em>2 a 3 col. sopa</em></li>
+      <li><span>Tomate (molho caseiro)</span><em>½ xícara</em></li>
+    </ul><p class="note">Couve-flor e cogumelos ficam para depois da fase.</p></div>
+    <div class="swap"><h3><i style="background:var(--g-liq)"></i>Bebida das vitaminas</h3><p class="base">200 ml no café, 150 ml no lanche</p><ul>
+      <li><span>Bebida de castanha-do-pará, sem açúcar e com cálcio</span><em>1ª escolha</em></li>
+      <li><span>Bebida de soja de proteína isolada</span><em>observar o intestino</em></li>
+      <li><span>Água</span><em>quando faltar a bebida</em></li>
+    </ul><p class="note">Castanha de caju e aveia comum ficam para depois.</p></div>
+  </div>
+</section>
 
 <section class="band wrap" id="dia">
   <h2>O seu dia</h2>
@@ -183,7 +245,7 @@ function picture(o){
   return `<div class="plate" aria-hidden="true"><div style="background:conic-gradient(${stops})"></div></div>`;
 }
 document.getElementById("legend").innerHTML=Object.values(G).map(([n,v])=>`<span><i style="background:var(${v})"></i>${n}</span>`).join("");
-document.getElementById("tabs").innerHTML=MEALS.map(m=>`<a href="#${m.id}" data-id="${m.id}">${m.short} <b>${m.time}</b></a>`).join("")+`<a href="#dia" data-id="dia">O seu dia</a>`;
+document.getElementById("tabs").innerHTML=MEALS.map(m=>`<a href="#${m.id}" data-id="${m.id}">${m.short} <b>${m.time}</b></a>`).join("")+`<a href="#trocas" data-id="trocas">Trocas</a><a href="#dia" data-id="dia">O seu dia</a>`;
 document.getElementById("meals").innerHTML=MEALS.map(m=>`
 <section class="meal wrap" id="${m.id}">
   <div class="mhead"><div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap"><h2>${esc(m.name)}</h2><span class="time">${m.time}</span></div><p>${esc(m.note)}</p></div>
@@ -206,7 +268,7 @@ for(const img of document.querySelectorAll(".ph img")){
 const links=[...document.querySelectorAll(".tabs a")];
 const bar=document.getElementById("tabs");let cur="";
 const io=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting&&e.target.id!==cur){cur=e.target.id;links.forEach(a=>a.classList.toggle("on",a.dataset.id===cur));const on=links.find(a=>a.dataset.id===cur);if(on)bar.scrollTo({left:on.offsetLeft-bar.clientWidth/2+on.offsetWidth/2})}},{rootMargin:"-40% 0px -55% 0px"});
-for(const s of document.querySelectorAll("main section, #dia"))io.observe(s);
+for(const s of document.querySelectorAll("main section, #trocas, #dia"))io.observe(s);
 }
 </script>
 </body>
