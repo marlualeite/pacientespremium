@@ -98,11 +98,48 @@ ul.ck li.on .box{background:#8A9E7F;border-color:#8A9E7F}ul.ck li.on .box svg{op
 .rph{aspect-ratio:16/7;margin:-16px -18px 12px;border-radius:10px 10px 0 0}
 .credit{font-size:12px;color:#9C8E86}
 @media(max-width:600px){.card.withph{grid-template-columns:minmax(0,1fr);gap:10px}.card.withph .ph{aspect-ratio:16/9}}
+
+.dnav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 10px}
+.dnav button{width:44px;height:44px;border-radius:50%;border:1px solid #ECE6DC;background:#fff;font-size:24px;line-height:1;color:#C4845A;cursor:pointer}
+.dnav button:disabled{opacity:.35;cursor:default}
+.dday{text-align:center}.dday b{display:block;font-family:'Lora',serif;font-style:italic;font-size:19px;color:#2C2420}.dday small{color:#9C8E86;font-size:13px}
+.dslots{display:grid;gap:12px}
+.dslot{background:#fff;border:1px solid #ECE6DC;border-radius:10px;overflow:hidden}
+.dhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:10px 14px;border-bottom:1px solid #F1ECE4}
+.dhead b{font-family:'Lora',serif;font-style:italic;color:#C4845A;font-size:17px}.dhead small{color:#9C8E86;font-size:13px}
+.dadd{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:72px;border:0;background:#FCFAF6;color:#A86A42;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.dadd svg{width:26px;height:26px}
+.dbody{display:grid;grid-template-columns:160px minmax(0,1fr);gap:14px;padding:12px 14px}
+.dphoto{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:#F1ECE4}
+.dphoto img{width:100%;height:100%;object-fit:cover;display:block}
+.dphoto .dt{position:absolute;left:6px;bottom:6px;background:rgba(44,36,32,.65);color:#fff;font-size:12px;padding:1px 7px;border-radius:10px}
+.dq{display:grid;gap:10px;font-size:14px;color:#5C4F48}
+.dq label{display:block;font-size:13px;font-weight:700;color:#6F8464;margin-bottom:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font:inherit;font-size:13px;padding:7px 11px;min-height:36px;border-radius:18px;border:1px solid #ECE6DC;background:#fff;color:#5C4F48;cursor:pointer}
+.chips button[aria-pressed=true]{background:#8A9E7F;border-color:#8A9E7F;color:#fff}
+.chips.alivio button[aria-pressed=true][data-v=sim]{background:#C4845A;border-color:#C4845A}
+.rng{display:flex;align-items:center;gap:10px}.rng input{flex:1;accent-color:#C4845A;height:28px}.rng output{min-width:2.2em;text-align:right;font-weight:700;color:#A86A42}
+.dq input[type=text]{width:100%;font:inherit;font-size:16px;padding:9px 11px;border:1px solid #ECE6DC;border-radius:8px;background:#FCFAF6;color:#2C2420}
+.dact{display:flex;gap:8px;flex-wrap:wrap}
+.dact button{font:inherit;font-size:13px;background:none;border:1px solid #ECE6DC;border-radius:18px;padding:7px 12px;min-height:36px;color:#5C4F48;cursor:pointer}
+.dact .del{color:#A8463F;border-color:#EBCFCB}
+.dconfirm{display:none;gap:8px;align-items:center;font-size:13px;color:#A8463F}.dconfirm.on{display:flex;flex-wrap:wrap}
+.dweek{display:flex;align-items:center;gap:12px;margin:14px 2px 6px;flex-wrap:wrap}
+.dweekrow{display:flex;gap:6px;flex-wrap:wrap}
+.dwd{display:grid;justify-items:center;gap:3px;font-size:12px;color:#9C8E86;background:none;border:0;cursor:pointer;padding:2px}
+.dwd i{width:34px;height:34px;border-radius:8px;background:#F1ECE4 center/cover no-repeat;border:2px solid transparent;display:grid;place-items:center;font-style:normal;font-size:12px;color:#5C4F48}
+.dwd.cur i{border-color:#C4845A}
+.dtools{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}
+.dtools button{font:inherit;font-size:14px;background:#fff;border:1px solid #ECE6DC;border-radius:20px;padding:9px 15px;min-height:42px;color:#5C4F48;cursor:pointer}
+#dmsg{font-size:13px;color:#6F8464}
+.dnav button:focus-visible,.dadd:focus-visible,.chips button:focus-visible,.dact button:focus-visible,.dtools button:focus-visible,.dwd:focus-visible{outline:2px solid #C4845A;outline-offset:2px}
+@media(max-width:600px){.dbody{grid-template-columns:minmax(0,1fr)}.dphoto{aspect-ratio:4/3}}
 @media print{nav.scroll,.shopbar{display:none}.meal{break-inside:auto}.card,.recipe,.note{break-inside:avoid}}
 </style></head><body>
 <div class="wrap">
 <header class="hdr"><div><div class="logo">LuaLeite</div><div class="logo-sub">Nutricionista</div></div><div class="hdr-r">Marlua Leite<br>CRN/DF 16507 · 61993185328</div></header>
-<nav class="scroll" aria-label="Refeições"><a href="#checklist">Checklist</a><a href="#ao-acordar">Ao acordar</a><a href="#cafe-da-manha">Café</a><a href="#neutrofer-dia-sim-dia-nao">Neutrofer</a><a href="#almoco">Almoço</a><a href="#sobremesa-opcional">Sobremesa</a><a href="#lanche-da-tarde">Lanche tarde</a><a href="#jantar-terminar-ate-20h">Jantar</a><a href="#chas">Chás</a><a href="#suplementacao">Suplementos</a><a href="#lista-de-compras">Compras</a><a href="#receitinhas-com-farinha-de-a">Receitas</a><a href="#pontos-de-atencao-e-proximos">Próximos passos</a></nav>
+<nav class="scroll" aria-label="Refeições"><a href="#checklist">Checklist</a><a href="#diario">Diário</a><a href="#ao-acordar">Ao acordar</a><a href="#cafe-da-manha">Café</a><a href="#neutrofer-dia-sim-dia-nao">Neutrofer</a><a href="#almoco">Almoço</a><a href="#sobremesa-opcional">Sobremesa</a><a href="#lanche-da-tarde">Lanche tarde</a><a href="#jantar-terminar-ate-20h">Jantar</a><a href="#chas">Chás</a><a href="#suplementacao">Suplementos</a><a href="#lista-de-compras">Compras</a><a href="#receitinhas-com-farinha-de-a">Receitas</a><a href="#pontos-de-atencao-e-proximos">Próximos passos</a></nav>
 <main>
 <h1>Prescrição Alimentar</h1>
 <div class="sub">Planejamento alimentar · Projeto Ovinho de Dino</div>
@@ -123,6 +160,21 @@ ul.ck li.on .box{background:#8A9E7F;border-color:#8A9E7F}ul.ck li.on .box svg{op
 <div class="week"><span class="wl">Últimos 7 dias</span><div id="week" class="wdots"></div></div>
 <p class="intro small">As marcações ficam salvas neste aparelho e navegador, e zeram sozinhas a cada dia. O Neutrofer é dia sim, dia não: a linha dele mostra quando foi o último.</p>
 </section>
+<section class="meal" id="diario"><div class="bar"><span class="bt">Diário alimentar com fotos</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><rect x="10" y="24" width="60" height="40" rx="8" fill="#C4845A"/><path d="M28 24l5-8h14l5 8" fill="#C4845A"/>
+  <circle cx="40" cy="44" r="14" fill="#FFFFFF"/><circle cx="40" cy="44" r="9" fill="#DAE5D5" stroke="#8A9E7F" stroke-width="2"/>
+  <circle cx="37" cy="41" r="3" fill="#FFFFFF" opacity=".8"/><rect x="56" y="29" width="8" height="5" rx="2" fill="#EDD5C2"/></svg></span></div>
+<div class="dnav">
+  <button type="button" id="dprev" aria-label="Dia anterior">‹</button>
+  <div class="dday"><b id="dlabel"></b><small id="dsum"></small></div>
+  <button type="button" id="dnext" aria-label="Próximo dia">›</button>
+</div>
+<div id="dslots" class="dslots"></div>
+<div class="dweek"><span class="wl">Semana</span><div id="dweek" class="dweekrow"></div></div>
+<div class="dtools"><button type="button" id="dcopy">Copiar resumo da semana</button><span id="dmsg" role="status"></span></div>
+<p class="intro small">Tire a foto na hora de comer, antes de começar. As fotos e anotações ficam salvas só neste celular e neste navegador. O resumo copiado vai sem as fotos, para colar no WhatsApp ou nas suas notas.</p>
+<input type="file" id="dfile" accept="image/*" capture="environment" hidden>
+</section>
+
 
 <section class="meal" id="ao-acordar"><div class="keep"><div class="bar"><span class="bt">07:30 — Ao acordar</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><path d="M26 18h24l-3 46a4 4 0 0 1-4 4H33a4 4 0 0 1-4-4z" fill="#FFFFFF" stroke="#8A9E7F" stroke-width="2.5"/>
   <path d="M28 34h20l-2 30a3 3 0 0 1-3 3H33a3 3 0 0 1-3-3z" fill="#CFE3EA"/>
@@ -367,4 +419,75 @@ ck.addEventListener('click',e=>{const li=e.target.closest('li');if(li)toggle(li.
 ck.addEventListener('keydown',e=>{const li=e.target.closest('li');if(li&&(e.key===' '||e.key==='Enter')){e.preventDefault();toggle(li.dataset.id);ck.querySelector('[data-id="'+li.dataset.id+'"]').focus()}});
 render();
 for(const c of document.querySelectorAll('.stack td')){let i=0,p=c;while(p=p.previousElementSibling)i++;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}
-}</script></body></html>
+}</script><script>
+{
+const MEALS=[["cafe","Café da manhã","08:30"],["almoco","Almoço","13:00"],["lanche","Lanche da tarde","16:00"],["jantar","Jantar","19:30"],["extra","Fora do plano","—"]];
+const COMO=["Segui o plano","Troquei pela lista","Comi outra coisa","Pulei"];
+const CTX=["Tranquila","Com pressa","Distraída","Cansada","Ansiosa"];
+const cam='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dk=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=dk(new Date());let cur=today,target=null,mem={};
+let db=null;
+function openDB(){return new Promise(res=>{try{const r=indexedDB.open('diario-lua',1);r.onupgradeneeded=()=>r.result.createObjectStore('e');r.onsuccess=()=>{db=r.result;res()};r.onerror=()=>res()}catch(e){res()}})}
+function put(k,v){mem[k]=v;if(!db)return;try{db.transaction('e','readwrite').objectStore('e').put(v,k)}catch(e){}}
+function del(k){delete mem[k];if(!db)return;try{db.transaction('e','readwrite').objectStore('e').delete(k)}catch(e){}}
+function loadAll(){return new Promise(res=>{if(!db)return res();try{const st=db.transaction('e').objectStore('e'),q=st.openCursor();q.onsuccess=()=>{const c=q.result;if(c){mem[c.key]=c.value;c.continue()}else res()};q.onerror=()=>res()}catch(e){res()}})}
+const key=(d,m)=>d+'|'+m;
+const shift=(d,n)=>{const [y,mo,da]=d.split('-').map(Number);const x=new Date(y,mo-1,da);x.setDate(x.getDate()+n);return dk(x)};
+const label=d=>{const [y,mo,da]=d.split('-').map(Number);const x=new Date(y,mo-1,da);const s=x.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit'});return d===today?'Hoje · '+s:s};
+function chips(name,opts,val,cls){return '<div class="chips '+(cls||'')+'" data-f="'+name+'">'+opts.map(o=>'<button type="button" data-v="'+esc(o)+'" aria-pressed="'+(val===o)+'">'+esc(o)+'</button>').join('')+'</div>'}
+function slot([id,name,time]){
+  const e=mem[key(cur,id)];
+  const head='<div class="dhead"><b>'+name+'</b><small>'+(time==='—'?'quando acontecer':time)+'</small></div>';
+  if(!e)return '<div class="dslot" data-m="'+id+'">'+head+'<button type="button" class="dadd" data-act="add">'+cam+'Tirar foto</button></div>';
+  return '<div class="dslot" data-m="'+id+'">'+head+'<div class="dbody"><div class="dphoto"><img src="'+e.img+'" alt="Foto da refeição: '+name+'"><span class="dt">'+esc(e.hora||'')+'</span></div><div class="dq">'
+   +'<div><label>Como foi</label>'+chips('como',COMO,e.como)+'</div>'
+   +'<div><label>Fome antes (0 a 10)</label><div class="rng"><input type="range" min="0" max="10" step="1" data-f="fome" value="'+(e.fome??5)+'"><output>'+(e.fome??'–')+'</output></div></div>'
+   +'<div><label>Saciedade depois (0 a 10)</label><div class="rng"><input type="range" min="0" max="10" step="1" data-f="sac" value="'+(e.sac??5)+'"><output>'+(e.sac??'–')+'</output></div></div>'
+   +'<div><label>Como eu estava</label>'+chips('ctx',CTX,e.ctx)+'</div>'
+   +'<div><label>Comi para aliviar?</label>'+chips('alivio',['não','sim'],e.alivio,'alivio')+'</div>'
+   +'<div><label>Nota (opcional)</label><input type="text" data-f="nota" maxlength="140" value="'+esc(e.nota)+'" placeholder="O que estava acontecendo?"></div>'
+   +'<div class="dact"><button type="button" data-act="add">Trocar foto</button><button type="button" class="del" data-act="ask">Apagar</button></div>'
+   +'<div class="dconfirm"><span>Apagar esta foto e as anotações?</span><button type="button" data-act="del">Sim, apagar</button><button type="button" data-act="no">Cancelar</button></div>'
+   +'</div></div></div>';
+}
+function render(){
+  document.getElementById('dlabel').textContent=label(cur);
+  const n=MEALS.filter(m=>mem[key(cur,m[0])]).length;
+  document.getElementById('dsum').textContent=n?n+(n>1?' refeições registradas':' refeição registrada'):'Nenhuma foto ainda';
+  document.getElementById('dnext').disabled=cur>=today;
+  document.getElementById('dslots').innerHTML=MEALS.map(slot).join('');
+  const days=[];for(let i=6;i>=0;i--)days.push(shift(today,-i));
+  document.getElementById('dweek').innerHTML=days.map(d=>{const es=MEALS.map(m=>mem[key(d,m[0])]).filter(Boolean);const [y,mo,da]=d.split('-').map(Number);const wd=new Date(y,mo-1,da).toLocaleDateString('pt-BR',{weekday:'narrow'});
+    return '<button type="button" class="dwd'+(d===cur?' cur':'')+'" data-d="'+d+'" aria-label="'+esc(label(d))+'"><i style="'+(es[0]?'background-image:url('+es[0].img+')':'')+'">'+(es[0]?'':'')+'</i>'+wd+(es.length?' '+es.length:'')+'</button>'}).join('');
+}
+function compress(file){return new Promise((res,rej)=>{const url=URL.createObjectURL(file),im=new Image();im.onload=()=>{const M=720,s=Math.min(1,M/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);res(c.toDataURL('image/jpeg',.72))};im.onerror=()=>{URL.revokeObjectURL(url);rej()};im.src=url})}
+const fileIn=document.getElementById('dfile');
+fileIn.addEventListener('change',async()=>{const f=fileIn.files[0];fileIn.value='';if(!f||!target)return;
+  try{const img=await compress(f);const k=key(cur,target);const old=mem[k]||{};const now=new Date();
+    put(k,Object.assign({},old,{img,hora:old.hora&&old.img?old.hora:now.toTimeString().slice(0,5)}));render()}catch(e){msg('Não consegui abrir essa foto.')}});
+const box=document.getElementById('dslots');
+box.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const s=b.closest('.dslot'),m=s&&s.dataset.m;
+  if(b.dataset.act==='add'){target=m;fileIn.click();return}
+  if(b.dataset.act==='ask'){s.querySelector('.dconfirm').classList.add('on');return}
+  if(b.dataset.act==='no'){s.querySelector('.dconfirm').classList.remove('on');return}
+  if(b.dataset.act==='del'){del(key(cur,m));render();return}
+  const g=b.closest('.chips');if(g){const k=key(cur,m),en=Object.assign({},mem[k]);const f=g.dataset.f;en[f]=en[f]===b.dataset.v?undefined:b.dataset.v;put(k,en);
+    g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(en[f]===x.dataset.v)))}});
+box.addEventListener('input',e=>{const t=e.target,f=t.dataset.f;if(!f)return;const s=t.closest('.dslot'),k=key(cur,s.dataset.m),en=Object.assign({},mem[k]);
+  en[f]=t.type==='range'?Number(t.value):t.value;put(k,en);if(t.type==='range')t.nextElementSibling.textContent=t.value});
+document.getElementById('dprev').addEventListener('click',()=>{cur=shift(cur,-1);render()});
+document.getElementById('dnext').addEventListener('click',()=>{if(cur<today){cur=shift(cur,1);render()}});
+document.getElementById('dweek').addEventListener('click',e=>{const b=e.target.closest('.dwd');if(b){cur=b.dataset.d;render()}});
+function msg(t){const m=document.getElementById('dmsg');m.textContent=t;setTimeout(()=>{if(m.textContent===t)m.textContent=''},4000)}
+document.getElementById('dcopy').addEventListener('click',async()=>{
+  const lines=['Diário alimentar da Lua — últimos 7 dias',''];
+  for(let i=6;i>=0;i--){const d=shift(today,-i);const es=MEALS.map(m=>[m,mem[key(d,m[0])]]).filter(x=>x[1]);if(!es.length)continue;lines.push(label(d));
+    for(const [m,e] of es){const p=[e.hora,e.como,e.fome!=null?'fome '+e.fome:'',e.sac!=null?'saciedade '+e.sac:'',e.ctx,e.alivio==='sim'?'comi para aliviar':'',e.nota].filter(Boolean);lines.push('• '+m[1]+': '+p.join(' · '))}lines.push('')}
+  const txt=lines.length>2?lines.join('\n'):'Sem registros nos últimos 7 dias.';
+  try{await navigator.clipboard.writeText(txt);msg('Resumo copiado.')}catch(e){msg('Não consegui copiar neste navegador.')}});
+openDB().then(loadAll).then(render);
+render();
+}
+</script></body></html>
