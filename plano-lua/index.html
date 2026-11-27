@@ -1,0 +1,370 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plano alimentar da Lua</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,700;1,9..40,400&family=Lora:ital,wght@0,400;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: acolhedora e clínica, como uma prescrição bem cuidada
+   IDEA: o plano alimentar impresso do consultório, agora vivo
+   PICTURE: a própria prescrição, com faixas de horário em terra
+   COLOUR and TYPE: design system Marlua (terra, sálvia, creme) · Lora + DM Sans
+   LAYOUT: coluna única de leitura, navegação por refeição */
+:root{color-scheme:light;--bg:#FAF6F0;--ink:#2C2420}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:64px;scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 'DM Sans',system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:860px;margin:0 auto;padding:0 max(4vw,16px)}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:28px 0 14px;border-bottom:1px solid #EDD5C2}
+.logo{font-family:'Lora',serif;font-style:italic;color:#C4845A;font-size:30px;line-height:1}
+.logo-sub,.hdr-r{font-size:13px;color:#9C8E86}.logo-sub{margin-top:6px}.hdr-r{text-align:right;line-height:1.6}
+nav.scroll{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding:10px 0;border-bottom:1px solid #EDD5C2;scrollbar-width:none}
+nav.scroll a{flex:none;font-size:14px;color:#5C4F48;text-decoration:none;padding:8px 12px;border-radius:20px;background:#fff;border:1px solid #ECE6DC;min-height:36px}
+nav.scroll a:hover,nav.scroll a:focus-visible{background:#EDD5C2;color:#2C2420;outline:none}
+h1{font-family:'Lora',serif;font-style:italic;font-weight:700;font-size:clamp(32px,5vw,44px);line-height:1.05;margin:28px 0 6px;text-wrap:balance}
+.sub{color:#9C8E86;font-size:15px;margin-bottom:14px}
+.pill{display:inline-block;background:#EDD5C2;color:#A86A42;font-weight:700;font-size:13px;padding:6px 14px;border-radius:20px;margin-bottom:18px}
+.goals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.goals>div{background:#fff;border:1px solid #EDD5C2;border-radius:10px;padding:12px 14px}
+.gl{display:block;font-size:13px;color:#6F8464;font-weight:700}
+.gv{display:block;font-family:'Lora',serif;font-size:21px;color:#C4845A;margin-top:2px;white-space:nowrap}
+.meal{margin-top:40px}
+.bar{background:#C4845A;color:#fff;font-family:'Lora',serif;font-style:italic;font-size:22px;padding:12px 18px;border-radius:6px;margin-bottom:12px}
+table.items{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:15px}
+table.items td,table.items th{border-bottom:1px solid #DAE5D5;padding:10px 12px;vertical-align:top}
+table.items tr:first-child td{border-top:1px solid #DAE5D5}
+table.items td.q{text-align:right;color:#5C4F48}
+table.sup th{text-align:left;font-size:13px;color:#6F8464;border-top:1px solid #DAE5D5}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:10px;background:#DAE5D5;color:#5C6E53;margin-left:6px}
+.tag.t{background:#EDD5C2;color:#A86A42}.tag.s{background:#F1ECE4;color:#9C8E86}
+.lbl{font-size:14px;font-weight:700;margin:14px 0 8px}.lbl.sm{font-size:13px;margin:0 0 4px}
+.sage{color:#6F8464}.terra{color:#B5764D}
+ul.subs{margin:0 0 12px;padding-left:20px;font-size:15px}ul.subs li{margin-bottom:6px;color:#5C4F48}ul.subs li b{color:#2C2420}
+hr{border:none;border-top:1px solid #EDD5C2;margin:18px 0 4px}
+p.intro{margin:0 0 12px;color:#5C4F48;font-size:15px}
+.card{background:#fff;border:1px solid #ECE6DC;border-left:3px solid #8A9E7F;border-radius:8px;padding:12px 16px;margin-bottom:10px;color:#5C4F48;font-size:15px}
+.note{border-radius:8px;padding:12px 16px;margin:8px 0;font-size:15px}
+.note.terra{background:#EDD5C2;color:#2C2420}.note.terra b{color:#A86A42}
+.note.sage{background:#DAE5D5;color:#2C2420}.note.sage b{color:#4F6145}
+.shopgrid{columns:3 200px;column-gap:24px;margin-top:8px}
+.shopcol{break-inside:avoid;margin-bottom:14px}
+ul.check{list-style:none;padding:0;margin:0;font-size:15px}
+ul.check li{padding:7px 0 7px 26px;position:relative;border-bottom:1px solid #ECE6DC;color:#5C4F48;cursor:pointer;user-select:none}
+ul.check li::before{content:'';position:absolute;left:0;top:10px;width:15px;height:15px;border:1.5px solid #C4845A;border-radius:3px;background:#fff}
+ul.check li.on{color:#9C8E86;text-decoration:line-through}
+ul.check li.on::before{background:#C4845A;box-shadow:inset 0 0 0 3px #fff}
+.recipe{background:#fff;border:1px solid #ECE6DC;border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.rhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px;border-bottom:1px solid #EDD5C2;padding-bottom:8px;margin-bottom:10px}
+.rtitle{font-family:'Lora',serif;font-style:italic;font-size:22px;color:#C4845A}
+.rporc{font-size:13px;color:#9C8E86}
+.rgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:20px}
+ol.steps{margin:0;padding-left:20px;color:#5C4F48;font-size:15px}ol.steps li{margin-bottom:6px}
+.shopbar{display:flex;justify-content:flex-end;margin:-4px 0 6px}
+.shopbar button{font:inherit;font-size:14px;background:none;border:1px solid #ECE6DC;border-radius:20px;padding:8px 14px;color:#5C4F48;cursor:pointer;min-height:40px}
+.ftr{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:space-between;border-top:1px solid #EDD5C2;margin-top:48px;padding:16px 0 40px;font-size:13px;color:#9C8E86}
+@media(max-width:600px){.goals{grid-template-columns:repeat(2,minmax(0,1fr))}.rgrid{grid-template-columns:minmax(0,1fr);gap:8px}
+ table.items{font-size:14px}table.items td{padding:9px 6px}.bar{font-size:19px}.hdr-r{font-size:12px}
+ .stack thead,.stack tr:first-child{display:none}.stack tr{display:grid;padding-block:8px;border-bottom:1px solid #DAE5D5}
+ .stack td{display:flow-root;border:0!important;padding:2px 0!important;padding-inline-start:6.5em!important}
+ .stack td::before{content:attr(data-l);float:inline-start;width:6em;margin-inline-start:-6.5em;color:#6F8464;font-size:13px;font-weight:700}}
+
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px 10px 18px}
+.ill{flex:none;width:64px;height:64px;border-radius:50%;background:#FAF6F0;display:grid;place-items:center;box-shadow:inset 0 0 0 2px #EDD5C2}
+.ill svg{width:50px;height:50px}
+.ckhead{display:flex;justify-content:space-between;gap:12px;font-size:14px;color:#5C4F48;margin:4px 2px 8px}
+#ckcount{font-weight:700;color:#A86A42;white-space:nowrap}
+ul.ck{list-style:none;margin:0;padding:0;background:#fff;border:1px solid #ECE6DC;border-radius:10px;overflow:hidden}
+ul.ck li{display:grid;grid-template-columns:62px minmax(0,1fr) 30px;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #F1ECE4;cursor:pointer;min-height:56px;user-select:none}
+ul.ck li:last-child{border-bottom:0}
+ul.ck li:focus-visible{outline:2px solid #C4845A;outline-offset:-2px}
+.ckt{font-family:'Lora',serif;font-style:italic;color:#C4845A;font-size:17px;white-space:nowrap}
+.ckn{font-size:15px;color:#2C2420}.ckn small{display:block;color:#9C8E86;font-size:13px}
+.box{width:26px;height:26px;border-radius:7px;border:2px solid #C4845A;display:grid;place-items:center;background:#fff;transition:background .15s}
+.box svg{width:16px;height:16px;opacity:0}
+ul.ck li.on{background:#F7F9F5}ul.ck li.on .ckn{color:#9C8E86;text-decoration:line-through}
+ul.ck li.on .box{background:#8A9E7F;border-color:#8A9E7F}ul.ck li.on .box svg{opacity:1}
+.week{display:flex;align-items:center;gap:12px;margin:12px 2px 4px;flex-wrap:wrap}
+.wl{font-size:13px;color:#6F8464;font-weight:700}
+.wdots{display:flex;gap:8px}
+.wd{display:grid;justify-items:center;gap:3px;font-size:12px;color:#9C8E86}
+.wd i{width:22px;height:22px;border-radius:50%;border:2px solid #DAE5D5;background:conic-gradient(#8A9E7F var(--p),#fff 0)}
+.small{font-size:13px;color:#9C8E86;margin-top:8px}
+@media(max-width:600px){.ill{width:52px;height:52px}.ill svg{width:40px;height:40px}ul.ck li{grid-template-columns:52px minmax(0,1fr) 28px;padding:10px}}
+@media(prefers-reduced-motion:reduce){.box{transition:none}}
+@media print{nav.scroll,.shopbar{display:none}.meal{break-inside:auto}.card,.recipe,.note{break-inside:avoid}}
+</style></head><body>
+<div class="wrap">
+<header class="hdr"><div><div class="logo">LuaLeite</div><div class="logo-sub">Nutricionista</div></div><div class="hdr-r">Marlua Leite<br>CRN/DF 16507 · 61993185328</div></header>
+<nav class="scroll" aria-label="Refeições"><a href="#checklist">Checklist</a><a href="#ao-acordar">Ao acordar</a><a href="#cafe-da-manha">Café</a><a href="#lanche-da-manha">Lanche manhã</a><a href="#neutrofer-dia-sim-dia-nao">Neutrofer</a><a href="#almoco">Almoço</a><a href="#sobremesa-opcional">Sobremesa</a><a href="#lanche-da-tarde">Lanche tarde</a><a href="#jantar-terminar-ate-20h">Jantar</a><a href="#chas">Chás</a><a href="#suplementacao">Suplementos</a><a href="#lista-de-compras">Compras</a><a href="#receitinhas-com-farinha-de-a">Receitas</a><a href="#pontos-de-atencao-e-proximos">Próximos passos</a></nav>
+<main>
+<h1>Prescrição Alimentar</h1>
+<div class="sub">Planejamento alimentar · Projeto Ovinho de Dino</div>
+<div class="pill">Paciente: Marlua Leite Palheta · Prescrito em: 25/11/2026</div>
+<div class="goals">
+  <div><span class="gl">Energia</span><span class="gv">≈ 1.450 kcal</span></div>
+  <div><span class="gl">Proteína</span><span class="gv">≈ 100–110 g</span></div>
+  <div><span class="gl">Água</span><span class="gv">2,5 L</span></div>
+  <div><span class="gl">Janela</span><span class="gv">8h30 às 20h</span></div>
+</div>
+<div class="note sage"><b>Regras da casa:</b> 100% sem glúten (ler “não contém glúten” no rótulo; aveia só certificada). Última refeição termina às 20h — depois, só água e chás calmantes. Puran sempre em jejum, só com água.</div>
+<section class="meal" id="checklist"><div class="bar"><span class="bt">Checklist de hoje — suplementos</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><rect x="16" y="22" width="26" height="40" rx="6" fill="#FFFFFF" stroke="#8A9E7F" stroke-width="2.5"/><rect x="18" y="14" width="22" height="10" rx="3" fill="#8A9E7F"/>
+  <rect x="21" y="34" width="16" height="14" rx="2" fill="#DAE5D5"/>
+  <rect x="48" y="30" width="24" height="11" rx="5.5" fill="#EDD5C2" transform="rotate(25 60 35)"/><path d="M60 29v12" stroke="#C4845A" stroke-width="2" transform="rotate(25 60 35)"/>
+  <circle cx="56" cy="58" r="7" fill="#F2C94C"/><circle cx="54" cy="56" r="2" fill="#FFF3C4"/></svg></span></div>
+<div class="ckhead"><span id="ckdate"></span><span id="ckcount"></span></div>
+<ul class="ck" id="ck"></ul>
+<div class="week"><span class="wl">Últimos 7 dias</span><div id="week" class="wdots"></div></div>
+<p class="intro small">As marcações ficam salvas neste aparelho e navegador, e zeram sozinhas a cada dia. O Neutrofer é dia sim, dia não: a linha dele mostra quando foi o último.</p>
+</section>
+
+<section class="meal" id="ao-acordar"><div class="keep"><div class="bar"><span class="bt">07:30 — Ao acordar</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><path d="M26 18h24l-3 46a4 4 0 0 1-4 4H33a4 4 0 0 1-4-4z" fill="#FFFFFF" stroke="#8A9E7F" stroke-width="2.5"/>
+  <path d="M28 34h20l-2 30a3 3 0 0 1-3 3H33a3 3 0 0 1-3-3z" fill="#CFE3EA"/>
+  <ellipse cx="60" cy="60" rx="9" ry="5" fill="#EDD5C2" stroke="#C4845A" stroke-width="2"/><path d="M60 55v10" stroke="#C4845A" stroke-width="1.6"/></svg></span></div>
+<table class="items">
+<tr><td>Puran T4 (levotiroxina)</td><td class="q">12,5 mcg</td></tr>
+<tr><td>Água</td><td class="q">1 copo (250ml)</td></tr>
+</table></div>
+<hr><div class="lbl terra">Observações — ao acordar, modo de consumo</div>
+<div class="card"><div class="lbl sage sm">Como tomar</div><div>Tome o Puran com água e espere de 30 a 60 minutos antes do café da manhã. Nada de café, chá, leite ou suplementos nesse intervalo. Ferro e cálcio só 4 horas depois.</div></div>
+
+</section>
+<section class="meal" id="cafe-da-manha"><div class="keep"><div class="bar"><span class="bt">08:30 — Café-da-manhã</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><ellipse cx="34" cy="56" rx="26" ry="9" fill="#FFFFFF" stroke="#EDD5C2" stroke-width="2"/>
+  <path d="M12 52c4-20 40-20 44 0z" fill="#FBF3E4" stroke="#E5D3B8" stroke-width="2"/>
+  <path d="M18 51c6-5 26-5 32 0" stroke="#C4845A" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M54 26h18v14a9 9 0 0 1-18 0z" fill="#C4845A"/><path d="M72 29h3a4 4 0 0 1 0 8h-3" stroke="#C4845A" stroke-width="2.5" fill="none"/>
+  <path d="M59 14c0 4 3 4 3 8M66 14c0 4 3 4 3 8" stroke="#8A9E7F" stroke-width="2" stroke-linecap="round" fill="none"/></svg></span></div>
+<table class="items">
+<tr><td>Frango cozido desfiado (ou carne moída)</td><td class="q">4 Colher(es) de sopa (80g)</td></tr>
+<tr><td>Goma de tapioca</td><td class="q">1.5 Colher(es) de sopa cheia(s) (25g)</td></tr>
+<tr><td>Requeijão light</td><td class="q">1 Colher(es) de sopa (15g)</td></tr>
+<tr><td>Mamão papaia</td><td class="q">0.5 Unidade(s) (135g)</td></tr>
+<tr><td>Café coado sem açúcar</td><td class="q">0.5 Xícara chá (100ml)</td></tr>
+<tr><td>Mecobe B12</td><td class="q">1 cápsula (1.000 mcg)</td></tr>
+</table></div>
+<div class="keep"><div class="lbl sage">Opções de substituição</div><ul class="subs">
+<li><b>Goma de tapioca:</b> Biscoito de arroz integral – 3 Unidade(s) (24g), sempre com patê de frango ou de sardinha – ou – Pão de frigideira de farinha de arroz – 1 Unidade (receita) – ou – Cuscuz de milho cozido – 4 Colher(es) de sopa (80g)</li>
+<li><b>Frango cozido desfiado:</b> Carne moída (patinho) refogada – 3 Colher(es) de sopa (75g) – ou – Sardinha em conserva escorrida – 0.5 Lata(s) (40g), em patê (Opção 5)</li>
+<li><b>Requeijão light:</b> Ricota – 1 Colher(es) de sopa cheia (20g)</li>
+<li><b>Mamão papaia:</b> Kiwi – 1 Unidade(s) média(s) (76g) – ou – Morango – 10 Unidade(s) (120g) – ou – Banana prata – 0.5 Unidade(s) (40g)</li>
+<li><b>Café coado:</b> Chá verde ou matcha – 1 Xícara chá (200ml)</li>
+</ul></div>
+<hr><div class="lbl terra">Observações — café da manhã, modo de consumo</div>
+<p class="intro">Deixe frango desfiado e carne moída prontos na geladeira (duram 3 dias) — o café da manhã fica pronto em 5 minutos.</p>
+<div class="card"><div class="lbl sage sm">Opção 1 — Tapioca de frango</div><div>Espalhe a goma numa frigideira antiaderente fria, ligue o fogo médio e espere a massa grudar (cerca de 1 minuto). Vire, recheie com o frango desfiado e o requeijão, dobre e sirva. O mamão vem à parte.</div></div>
+<div class="card"><div class="lbl sage sm">Opção 2 — Tapioca de carne moída</div><div>Mesmo preparo, com a carne moída refogada com cebola, tomate e cheiro-verde. Fica ótima com orégano.</div></div>
+<div class="card"><div class="lbl sage sm">Opção 3 — Panqueca de banana com farinha de arroz</div><div><b>Substitui a tapioca, o frango e o mamão.</b> Amasse 1 banana prata pequena bem madura (70g) e misture com 2 ovos, 1 colher de sopa de farinha de arroz (10g) e canela. Se quiser mais proteína, junte 0.5 medida de whey isolado (15g) na massa. Cozinhe em frigideira antiaderente com um fio de azeite, em fogo baixo, dos dois lados, até dourar. Consumir ainda morna. (≈ 260 kcal e 14g de proteína; com whey, ≈ 320 kcal e 26g.)</div></div>
+<div class="card"><div class="lbl sage sm">Opção 4 — Biscoito de arroz com patê de frango</div><div>Misture o frango desfiado com o requeijão light, limão, sal e cheiro-verde até virar um patê. Passe sobre 3 biscoitos de arroz integral e acompanhe com a fruta.</div></div>
+<div class="card"><div class="lbl sage sm">Opção 5 — Biscoito de arroz com patê de sardinha</div><div>Amasse 0.5 lata de sardinha escorrida (40g), sem pele e espinha, com 1 colher de sopa de requeijão light, limão, cebola roxa bem picadinha e cheiro-verde. Passe sobre 3 biscoitos de arroz integral e acompanhe com a fruta.</div></div>
+<div class="note terra"><b>Orientação:</b> mantenha o café em 100ml e sem açúcar. Ele conta no limite de cafeína do dia (até 200 mg, somando chá verde e matcha).</div>
+
+</section>
+<section class="meal" id="lanche-da-manha"><div class="keep"><div class="bar"><span class="bt">10:30 — Lanche da manhã</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="32" cy="36" r="20" fill="#8C6A3F"/><circle cx="32" cy="36" r="17" fill="#9BC46A"/>
+  <circle cx="32" cy="36" r="6" fill="#F4F0D8"/>
+  <g fill="#2C2420"><circle cx="42.0" cy="36.0" r="1.3"/><circle cx="39.1" cy="43.1" r="1.3"/><circle cx="32.0" cy="46.0" r="1.3"/><circle cx="24.9" cy="43.1" r="1.3"/><circle cx="22.0" cy="36.0" r="1.3"/><circle cx="24.9" cy="28.9" r="1.3"/><circle cx="32.0" cy="26.0" r="1.3"/><circle cx="39.1" cy="28.9" r="1.3"/></g>
+  <ellipse cx="58" cy="60" rx="10" ry="6" fill="#B07A4C" transform="rotate(-20 58 60)"/><ellipse cx="44" cy="66" rx="8" ry="5" fill="#C9935F" transform="rotate(15 44 66)"/></svg></span></div>
+<table class="items">
+<tr><td>Kiwi</td><td class="q">1 Unidade(s) média(s) (76g)</td></tr>
+<tr><td>Castanha-do-pará</td><td class="q">1 Unidade(s) (4g)</td></tr>
+<tr><td>Amêndoas</td><td class="q">8 Unidade(s) (10g)</td></tr>
+<tr><td>Biscoito de arroz integral com patê de frango ou sardinha (opcional, dias de mais fome)</td><td class="q">1 Unidade (8g) + 2 Colher(es) de sopa (40g)</td></tr>
+</table></div>
+<div class="keep"><div class="lbl sage">Opções de substituição</div><ul class="subs">
+<li><b>Kiwi:</b> Laranja – 1 Unidade(s) média(s) (130g) – ou – Mexerica – 1 Unidade(s) média(s) (135g) – ou – Morango – 10 Unidade(s) (120g) – ou – Mamão papaia – 0.5 Unidade(s) (135g)</li>
+<li><b>Amêndoas:</b> Castanha de caju – 5 Unidade(s) (10g) – ou – Nozes – 3 Metade(s) (10g) – ou – Amendoim sem sal – 15 Unidade(s) (10g) – ou – Pistache – 12 Unidade(s) (10g) – ou – Macadâmia – 3 Unidade(s) (9g) – ou – Pasta de amendoim integral – 1 Colher(es) de sobremesa (10g)</li>
+</ul></div>
+<div class="note terra"><b>Orientação:</b> a castanha-do-pará é diária (selênio, importante no Hashimoto) e não deve passar de 1 a 2 por dia. Sem leite ou iogurte nesse horário, porque o cálcio fica perto do Puran.</div>
+
+</section>
+<section class="meal" id="neutrofer-dia-sim-dia-nao"><div class="keep"><div class="bar"><span class="bt">12:30 — Neutrofer (dia sim, dia não)</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="34" cy="40" r="20" fill="#F2A541"/><circle cx="34" cy="40" r="16" fill="#F8C77A"/>
+  <g stroke="#F2A541" stroke-width="2"><path d="M34 40L50.0 40.0"/><path d="M34 40L42.0 53.9"/><path d="M34 40L26.0 53.9"/><path d="M34 40L18.0 40.0"/><path d="M34 40L26.0 26.1"/><path d="M34 40L42.0 26.1"/></g>
+  <rect x="50" y="50" width="24" height="11" rx="5.5" fill="#EDD5C2" transform="rotate(-30 62 55)"/><path d="M62 49v12" stroke="#C4845A" stroke-width="2" transform="rotate(-30 62 55)"/></svg></span></div>
+<table class="items">
+<tr><td>Neutrofer</td><td class="q">300 mg</td></tr>
+<tr><td>Suco de laranja ou acerola natural</td><td class="q">0.5 Copo(s) (100ml)</td></tr>
+</table></div>
+<div class="note sage"><b>Orientação:</b> tome 30 minutos antes do almoço, com a vitamina C. Longe de leite, iogurte, queijo, café e chá.</div>
+
+</section>
+<section class="meal" id="almoco"><div class="keep"><div class="bar"><span class="bt">13:00 — Almoço</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="42" r="30" fill="#FFFFFF" stroke="#EDD5C2" stroke-width="2.5"/><circle cx="40" cy="42" r="23" fill="#FCFAF6"/>
+  <path d="M40 42V19a23 23 0 0 0-23 23z" fill="#7FA36B"/><circle cx="27" cy="31" r="4" fill="#9BC46A"/>
+  <path d="M40 42h23a23 23 0 0 0-23-23z" fill="#F7F2E8"/><g fill="#E9E0CF"><circle cx="47" cy="30" r="2"/><circle cx="53" cy="35" r="2"/><circle cx="50" cy="25" r="1.6"/></g>
+  <path d="M40 42v23a23 23 0 0 0 23-23z" fill="#6B4A32"/><path d="M40 42H17a23 23 0 0 0 23 23z" fill="#D9A066"/>
+  <path d="M24 50l8 4M26 46l9 4" stroke="#B9783F" stroke-width="2" stroke-linecap="round"/></svg></span></div>
+<table class="items">
+<tr><td>Arroz branco cozido</td><td class="q">3 Colher(es) de sopa cheia(s) (75g)</td></tr>
+<tr><td>Feijão carioca cozido (50% grão e caldo)</td><td class="q">1 Concha(s) pequena(s) (80g)</td></tr>
+<tr><td>Peito de frango grelhado</td><td class="q">1 Filé(s) médio(s) (110g)</td></tr>
+<tr><td>Alface, agrião ou espinafre</td><td class="q">À vontade</td></tr>
+<tr><td>Legumes cozidos (cenoura, abobrinha, chuchu, beterraba)</td><td class="q">1 Xícara chá (100g)</td></tr>
+<tr><td>Tomate</td><td class="q">À vontade</td></tr>
+<tr><td>Azeite de oliva extravirgem</td><td class="q">1 Colher(es) de chá (4ml)</td></tr>
+<tr><td>Vitamina D3 + Ômega-3</td><td class="q">Conforme a página de suplementos</td></tr>
+</table></div>
+<div class="keep"><div class="lbl sage">Opções de substituição</div><ul class="subs">
+<li><b>Arroz branco cozido:</b> Arroz integral cozido – 3 Colher(es) de sopa (75g) – ou – Batata inglesa cozida – 1 Unidade(s) média(s) (180g) – ou – Meio a meio: arroz – 1.5 Colher(es) de sopa cheia(s) (38g) + batata inglesa cozida – 1 Unidade(s) pequena(s) (90g) – ou – Batata-doce cozida – 1 Unidade(s) pequena(s) (100g) – ou – Mandioquinha cozida – 1 Unidade(s) média(s) (100g) – ou – Inhame cozido – 1 Unidade(s) pequena(s) (90g) – ou – Mandioca cozida – 2 Pedaço(s) pequeno(s) (75g)</li>
+<li><b>Peito de frango grelhado:</b> Patinho grelhado – 1 Bife(s) médio(s) (90g) – ou – Filé de tilápia grelhado – 1 Filé(s) grande(s) (130g) – ou – Salmão grelhado – 1 Posta(s) pequena(s) (90g) – ou – Lombo suíno assado – 1 Fatia(s) média(s) (90g) – ou – Sardinha assada – 2 Unidade(s) (100g)</li>
+<li><b>Feijão carioca:</b> Lentilha cozida – 1 Concha(s) pequena(s) (80g) – ou – Grão-de-bico cozido – 2 Colher(es) de sopa (50g)</li>
+</ul></div>
+<hr><div class="lbl terra">Observações — almoço, modo de consumo</div>
+<p class="intro">Escolha 1 opção de proteína, 1 de carboidrato e complete o prato com salada e legumes. Metade do prato é vegetal.<br><b>Proteína na semana:</b> peixe 3x (sardinha, tilápia ou salmão), carne vermelha magra 3x (patinho, lagarto, alcatra sem gordura) e frango ou porco magro nos outros dias.<br><b>Vitamina C no prato:</b> limão na salada, tomate, pimentão ou acerola de sobremesa, para absorver melhor o ferro.</p>
+<div class="card"><div class="lbl sage sm">Modo de preparo — Frango grelhado</div><div>Tempere o filé com limão, alho amassado, cúrcuma, páprica e sal por pelo menos 20 minutos. Grelhe em frigideira bem quente com um fio de azeite, 4 a 5 minutos de cada lado, sem mexer, até dourar.</div></div>
+<div class="card"><div class="lbl sage sm">Modo de preparo — Legumes no vapor</div><div>Corte em cubos ou rodelas e cozinhe no vapor por 8 a 10 minutos, até ficarem macios mas firmes. Finalize com o azeite, sal e ervas (salsinha, tomilho).</div></div>
+<div class="card"><div class="lbl sage sm">Modo de preparo — Feijão que não estufa</div><div>Deixe o feijão de molho por 12 horas e descarte essa água antes de cozinhar. Cozinhe com louro. Isso diminui o inchaço e os gases.</div></div>
+<div class="note terra"><b>Observação:</b> nada de chá ou café de 1 hora antes até 1 hora depois do almoço — atrapalham a absorção do ferro. Mastigue bem e coma com calma.</div>
+
+</section>
+<section class="meal" id="sobremesa-opcional"><div class="keep"><div class="bar"><span class="bt">13:30 — Sobremesa (opcional)</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><rect x="18" y="22" width="44" height="36" rx="5" fill="#6B4632"/>
+  <g fill="#7E5640"><rect x="22" y="26" width="16" height="12" rx="2"/><rect x="42" y="26" width="16" height="12" rx="2"/><rect x="22" y="42" width="16" height="12" rx="2"/><rect x="42" y="42" width="16" height="12" rx="2"/></g>
+  <path d="M62 30l8 -6" stroke="#C4845A" stroke-width="2.5" stroke-linecap="round"/></svg></span></div>
+<table class="items">
+<tr><td>Chocolate 70% cacau sem glúten</td><td class="q">1 Quadradinho(s) (10g)</td></tr>
+</table></div>
+<div class="keep"><div class="lbl sage">Opções de substituição</div><ul class="subs">
+<li><b>Chocolate 70%:</b> Acerola – 10 Unidade(s) (120g) – ou – Morango – 10 Unidade(s) (120g) – ou – Bolinho de caneca de cacau (receita) – 1 Unidade, no lugar do lanche da tarde</li>
+</ul></div>
+<div class="note sage"><i>Observação: o doce está planejado, sem culpa. Uma vez por semana, uma porção de sorvete ou um doce sem glúten, com calma e presença.</i></div>
+
+</section>
+<section class="meal" id="lanche-da-tarde"><div class="keep"><div class="bar"><span class="bt">16:00 — Lanche da tarde</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><path d="M12 40h56a28 24 0 0 1-56 0z" fill="#DAE5D5" stroke="#8A9E7F" stroke-width="2.5"/>
+  <ellipse cx="40" cy="40" rx="28" ry="7" fill="#FFFFFF"/>
+  <path d="M30 30c-6 0-9 6-6 11 2 4 7 4 9 0 3-5 2-11-3-11z" fill="#D9534F"/><path d="M27 30l3 3 3-3" stroke="#7FA36B" stroke-width="2.2" fill="none"/>
+  <path d="M50 28c-6 0-9 6-6 11 2 4 7 4 9 0 3-5 2-11-3-11z" fill="#E25C57"/><path d="M47 28l3 3 3-3" stroke="#7FA36B" stroke-width="2.2" fill="none"/>
+  <g fill="#2C2420" opacity=".5"><circle cx="38" cy="40" r=".9"/><circle cx="42" cy="38" r=".9"/><circle cx="36" cy="37" r=".9"/></g></svg></span></div>
+<table class="items">
+<tr><td>Iogurte natural desnatado</td><td class="q">1 Unidade(s) média(s) (170g)</td></tr>
+<tr><td>Leite em pó desnatado (no lugar do whey, por enquanto)</td><td class="q">2 Colher(es) de sopa cheia(s) (30g)</td></tr>
+<tr><td>Morango</td><td class="q">6 Unidade(s) média(s) (72g)</td></tr>
+<tr><td>Semente de chia</td><td class="q">1 Colher(es) de sobremesa (6g)</td></tr>
+<tr><td>Creatina monohidratada</td><td class="q">1 Colher(es) de chá rasa (3g)</td></tr>
+</table></div>
+<div class="keep"><div class="lbl sage">Opções de substituição</div><ul class="subs">
+<li><b>Morango:</b> Kiwi – 1 Unidade(s) pequena(s) (60g) – ou – Mamão papaia – 0.33 Unidade(s) (90g) – ou – Banana prata – 0.5 Unidade(s) pequena(s) (35g) – ou – Mirtilo – 0.33 Xícara chá (50g) – ou – Laranja ou mexerica – 0.5 Unidade(s) (70g) – ou – Abacaxi – 1 Fatia(s) fina(s) (70g) – ou – Melão – 1 Fatia(s) média(s) (110g) – ou – Uva – 8 Unidade(s) (65g) – ou – Goiaba – 0.5 Unidade(s) pequena(s) (60g) – ou – Pêssego – 1 Unidade(s) pequena(s) (90g) – ou – Manga – 0.25 Unidade(s) média(s) (50g) – ou – Maçã ou pera – 0.5 Unidade(s) pequena(s) (60g) – ou – Melancia – 1 Fatia(s) pequena(s) (100g)</li>
+<li><b>Semente de chia:</b> Linhaça dourada triturada – 1 Colher(es) de sobremesa (6g) – ou – Amêndoas – 5 Unidade(s) (6g) – ou – Castanha de caju – 3 Unidade(s) (6g) – ou – Nozes – 2 Metade(s) (6g) – ou – Amendoim sem sal – 10 Unidade(s) (6g) – ou – Pistache – 8 Unidade(s) (6g) – ou – Macadâmia – 2 Unidade(s) (5g)</li>
+<li><b>Iogurte + leite em pó:</b> Iogurte natural + Whey isolado – 0.5 Medida(s) (15g), quando tiver – ou – Iogurte proteico sem glúten – 1 Unidade(s) (140 a 160g, com 12 a 15g de proteína)</li>
+</ul></div>
+<hr><div class="lbl terra">Observações — lanche da tarde, modo de consumo</div>
+<p class="intro">Escolha 1 opção. Prefira morango, kiwi, mamão, laranja e mirtilo nos dias de inchaço — maçã, pera, manga e melancia costumam fermentar mais. Em dia de treino à noite, faça o lanche 1 hora antes do treino.</p>
+<div class="card"><div class="lbl sage sm">Opção 1 — Iogurte proteico com frutas</div><div>Misture o leite em pó no iogurte até ficar cremoso e sem grumos. Cubra com os morangos picados e a chia. A creatina pode ir misturada no iogurte.</div></div>
+<div class="card"><div class="lbl sage sm">Opção 2 — Biscoito de arroz com patê</div><div>2 biscoitos de arroz integral com patê de frango (60g de frango desfiado) ou patê de sardinha (0.5 lata), feitos com 1 colher de sopa de requeijão light, limão e cebolinha. Acompanhe com palitos de cenoura ou pepino.</div></div>
+<div class="card"><div class="lbl sage sm">Opção 3 — Vitamina</div><div>Bata 200ml de leite desnatado ou bebida vegetal sem açúcar, 2 colheres de sopa cheias de leite em pó desnatado (30g) (ou 1 medida de whey, quando tiver), 1/2 banana congelada e canela.</div></div>
+<div class="card"><div class="lbl sage sm">Opção 4 — Fatia de bolo de banana</div><div>1 fatia (50g) do bolo de banana com farinha de arroz (receita) + 1 iogurte natural desnatado.</div></div>
+
+</section>
+<section class="meal" id="jantar-terminar-ate-20h"><div class="keep"><div class="bar"><span class="bt">19:30 — Jantar (terminar até 20h)</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><path d="M10 42h60a30 24 0 0 1-60 0z" fill="#C4845A"/>
+  <ellipse cx="40" cy="42" rx="30" ry="7" fill="#F6E7C8"/>
+  <path d="M20 42c5-6 10 6 15 0s10 6 15 0 10 6 14 0" stroke="#E8CF9E" stroke-width="2.5" fill="none"/>
+  <circle cx="34" cy="40" r="5" fill="#D9534F"/><circle cx="48" cy="41" r="4" fill="#D9534F"/><path d="M42 37l4-3" stroke="#7FA36B" stroke-width="3" stroke-linecap="round"/>
+  <path d="M56 16l-6 22M62 18l-8 21" stroke="#2C2420" stroke-width="2" stroke-linecap="round" opacity=".6"/></svg></span></div>
+<table class="items">
+<tr><td>Macarrão de arroz cozido</td><td class="q">1 Xícara chá (100g cozido / 35g cru)</td></tr>
+<tr><td>Sardinha em conserva, escorrida</td><td class="q">1 Lata(s) (84g)</td></tr>
+<tr><td>Molho de tomate caseiro</td><td class="q">2 Colher(es) de sopa cheia(s) (40g)</td></tr>
+<tr><td>Abobrinha refogada</td><td class="q">0.5 Xícara chá (60g)</td></tr>
+<tr><td>Requeijão light</td><td class="q">1 Colher(es) de sopa (15g)</td></tr>
+<tr><td>Salada de folhas</td><td class="q">À vontade</td></tr>
+</table></div>
+<div class="keep"><div class="lbl sage">Opções de substituição</div><ul class="subs">
+<li><b>Macarrão de arroz:</b> Goma de tapioca – 1.5 Colher(es) de sopa cheia(s) (25g) – ou – Batata-doce cozida – 1 Unidade(s) pequena(s) (80g) – ou – Arroz branco cozido – 2 Colher(es) de sopa (50g)</li>
+<li><b>Sardinha:</b> Frango cozido desfiado – 5 Colher(es) de sopa (100g) – ou – Carne moída (patinho) – 3 Colher(es) de sopa (80g) – ou – Ovo de galinha + 1 clara – 2 Unidade(s) (130g)</li>
+</ul></div>
+<hr><div class="lbl terra">Observações — jantar, modo de consumo</div>
+<p class="intro">Escolha 1 opção. Prefira refeições mais leves à noite, para dormir bem e acordar sem inchaço.</p>
+<div class="card"><div class="lbl sage sm">Opção 1 — Macarrão de arroz com sardinha</div><div>Cozinhe o macarrão em água fervente com sal pelo tempo da embalagem e escorra. Refogue alho e a abobrinha, junte o molho de tomate e a sardinha desfiada, sem a pele e o óleo. Misture o macarrão e finalize com o requeijão e manjericão.</div></div>
+<div class="card"><div class="lbl sage sm">Opção 2 — Tapioca com frango</div><div>Faça a tapioca e recheie com o frango desfiado temperado com tomate, cebola e cheiro-verde. Acompanhe com salada.</div></div>
+<div class="card"><div class="lbl sage sm">Opção 3 — Omelete de legumes</div><div>Bata 2 ovos e 1 clara com sal, orégano e cúrcuma. Junte espinafre, tomate e abobrinha picados e 1 colher de sopa de requeijão light. Cozinhe tampado em fogo baixo e sirva com 80g de batata-doce.</div></div>
+<div class="card"><div class="lbl sage sm">Opção 4 — Prato do almoço, menor</div><div>2 colheres de sopa de arroz, 100g de proteína e legumes, sem feijão (ajuda no inchaço noturno).</div></div>
+<div class="card"><div class="lbl sage sm">Opção 5 — Torta de frango com farinha de arroz</div><div>1 pedaço (1/6 da forma) da torta de liquidificador (receita) + salada à vontade.</div></div>
+<div class="note terra"><b>Orientações gerais:</b> depois das 20h, apenas água e os chás calmantes. Se bater fome à noite, observe se o dia teve proteína suficiente — ela é a primeira coisa a ajustar.</div>
+
+</section>
+
+<section class="meal" id="chas"><div class="keep"><div class="bar"><span class="bt">Ao longo do dia — Chás</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><path d="M14 36h40v8a20 20 0 0 1-40 0z" fill="#8A9E7F"/><path d="M54 40h4a7 7 0 0 1 0 14h-6" stroke="#8A9E7F" stroke-width="3" fill="none"/>
+  <ellipse cx="34" cy="36" rx="20" ry="4" fill="#C9D9A8"/><ellipse cx="34" cy="68" rx="26" ry="4" fill="#EDD5C2"/>
+  <path d="M26 14c-4 5 4 8 0 14M36 12c-4 5 4 8 0 14M46 14c-4 5 4 8 0 14" stroke="#C4845A" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M60 18c6-6 12 0 6 6-4 4-10 2-6-6z" fill="#7FA36B"/></svg></span></div>
+<table class="items">
+<tr><td><b>9h30 às 11h30</b> · Chá verde ou matcha</td><td class="q">1 a 2 Xícara(s) chá (200ml cada)</td></tr>
+<tr><td><b>14h30 às 18h</b> · Gengibre com limão, hortelã, erva-doce ou rooibos</td><td class="q">À vontade</td></tr>
+<tr><td><b>21h às 22h</b> · Camomila ou erva-cidreira (melissa)</td><td class="q">1 Xícara chá (200ml)</td></tr>
+</table></div>
+<hr><div class="lbl terra">Observações — chás, modo de consumo</div>
+<div class="card"><div class="lbl sage sm">As duas regras</div><div>1. Com o Puran, só água. 2. Nenhum chá de 1 hora antes até 1 hora depois do almoço, do jantar e do Neutrofer — os polifenóis reduzem a absorção do ferro.</div></div>
+<div class="card"><div class="lbl sage sm">Modo de preparo</div><div>Ervas secas: 1 colher de sopa para 200ml de água quente (não fervendo), tampado por 5 a 7 minutos. Chá verde: água a cerca de 80 °C por 2 a 3 minutos, para não amargar. Gengibre: 3 rodelas fervidas por 5 minutos, depois limão. Sem açúcar.</div></div>
+<div class="note terra"><b>A partir das tentativas (fevereiro):</b> evite boldo, sene, cavalinha, arruda, carqueja e hibisco em grande quantidade, e revise a lista com a obstetra. Chá verde e matcha só até as 14h, e somando café, abaixo de 200 mg de cafeína por dia.</div>
+</section>
+
+<section class="meal" id="suplementacao"><div class="keep"><div class="bar"><span class="bt">Suplementação</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><rect x="16" y="22" width="26" height="40" rx="6" fill="#FFFFFF" stroke="#8A9E7F" stroke-width="2.5"/><rect x="18" y="14" width="22" height="10" rx="3" fill="#8A9E7F"/>
+  <rect x="21" y="34" width="16" height="14" rx="2" fill="#DAE5D5"/>
+  <rect x="48" y="30" width="24" height="11" rx="5.5" fill="#EDD5C2" transform="rotate(25 60 35)"/><path d="M60 29v12" stroke="#C4845A" stroke-width="2" transform="rotate(25 60 35)"/>
+  <circle cx="56" cy="58" r="7" fill="#F2C94C"/><circle cx="54" cy="56" r="2" fill="#FFF3C4"/></svg></span></div>
+<table class="items sup stack">
+<tr><th>Suplemento</th><th>Dose</th><th>Horário</th></tr>
+<tr><td>Puran T4 <span class="tag">manter</span></td><td>12,5 mcg</td><td>07:30, em jejum</td></tr>
+<tr><td>Mecobe B12 <span class="tag">manter</span></td><td>1.000 mcg</td><td>Café da manhã</td></tr>
+<tr><td>Neutrofer <span class="tag">manter</span></td><td>300 mg, dia sim, dia não</td><td>12:30, com vitamina C</td></tr>
+<tr><td>Metilfolato ou ácido fólico <span class="tag t">iniciar já</span></td><td>400 mcg/dia ou conforme a ginecologista (01/12)</td><td>Qualquer horário</td></tr>
+<tr><td>Vitamina D3</td><td>2.000 UI/dia</td><td>Almoço</td></tr>
+<tr><td>Ômega-3 concentrado</td><td>1g de EPA+DHA/dia (≥ 500 mg DHA)</td><td>Almoço</td></tr>
+<tr><td>Creatina monohidratada</td><td>3g/dia</td><td>Lanche da tarde</td></tr>
+<tr><td>Magnésio glicinato <span class="tag s">opcional</span></td><td>200 a 300 mg</td><td>21:30</td></tr>
+<tr><td>Whey isolado sem glúten <span class="tag s">opcional</span></td><td>15 a 30g</td><td>Lanche da tarde</td></tr>
+</table></div>
+<hr><div class="lbl terra">Por que cada um, com base nos exames de 05/09/2026</div>
+<ul class="subs">
+<li><b>Folato:</b> o ideal é começar pelo menos 3 meses antes de engravidar, e fevereiro está a menos de 3 meses.</li>
+<li><b>Ferro:</b> a ferritina caiu de 65 para 43 ng/mL. Manter o Neutrofer e a carne vermelha 3x na semana.</li>
+<li><b>Vitamina D:</b> está em 28 ng/mL; o alvo para autoimune e pré-concepção é de 40 a 60.</li>
+<li><b>Ômega-3:</b> PCR ultrassensível subiu para 2,45 mg/L e o HDL caiu para 48 mg/dL. Escolha marca com laudo de metais pesados.</li>
+<li><b>Creatina:</b> preserva massa muscular no déficit e no fim da tirzepatida. Ao engravidar, decidir com a obstetra. Ela pode subir um pouco a creatinina do exame: avise na coleta.</li>
+<li><b>Tireoide:</b> TSH 3,68 µUI/mL, dentro da faixa, mas na pré-concepção costuma-se buscar menos de 2,5. Levar à endocrinologista. Um pré-natal com iodo só depois de confirmar com ela, por causa do Hashimoto.</li>
+</ul>
+</section>
+<section class="meal brk" id="lista-de-compras"><div class="bar"><span class="bt">Lista de compras — 1 semana</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><path d="M24 34l10-18M56 34L46 16" stroke="#2C2420" stroke-width="2.5" stroke-linecap="round" opacity=".6"/>
+  <circle cx="30" cy="30" r="8" fill="#D9534F"/><path d="M40 32c0-10 10-12 12-10" stroke="#7FA36B" stroke-width="5" stroke-linecap="round" fill="none"/><circle cx="50" cy="31" r="7" fill="#F2A541"/>
+  <path d="M10 36h60l-6 30H16z" fill="#C4845A"/><path d="M10 36h60" stroke="#A86A42" stroke-width="3"/>
+  <path d="M28 44v16M40 44v16M52 44v16" stroke="#A86A42" stroke-width="2.5" stroke-linecap="round"/></svg></span></div><div class="shopbar"><button id="clr" type="button">Desmarcar tudo</button></div><div class="shopgrid"><div class="shopcol"><div class="lbl terra">Hortifrúti</div><ul class="check"><li>Mamão papaia – 4 un</li><li>Kiwi – 6 un</li><li>Morango – 2 caixas</li><li>Laranja – 6 un</li><li>Banana prata – 6 un</li><li>Limão – 6 un</li><li>Acerola – 1 bandeja</li><li>Alface, agrião e espinafre – 3 maços</li><li>Tomate – 6 un</li><li>Cenoura – 4 un</li><li>Abobrinha – 3 un</li><li>Chuchu e beterraba – 2 un cada</li><li>Batata-doce – 1 kg</li><li>Mandioquinha ou inhame – 500g</li><li>Cebola, alho, gengibre, cheiro-verde</li></ul></div><div class="shopcol"><div class="lbl terra">Açougue e peixaria</div><ul class="check"><li>Peito de frango – 1,5 kg</li><li>Patinho (bife e moído) – 800g</li><li>Filé de tilápia ou salmão – 500g</li><li>Lombo suíno – 300g</li></ul></div><div class="shopcol"><div class="lbl terra">Ovos e frios</div><ul class="check"><li>Ovos – 18 un (panqueca, receitas e omelete)</li><li>Ricota – 1 un</li><li>Requeijão light – 1 pote</li><li>Iogurte natural desnatado – 7 un</li><li>Leite em pó desnatado – 1 pacote</li></ul></div><div class="shopcol"><div class="lbl terra">Mercearia sem glúten</div><ul class="check"><li>Arroz branco e integral</li><li>Feijão carioca e lentilha</li><li>Goma de tapioca – 500g</li><li>Macarrão de arroz – 500g</li><li>Biscoito de arroz integral – 1 pacote</li><li>Sardinha em conserva – 3 latas</li><li>Sardinha extra para patê – 2 latas</li><li>Molho de tomate caseiro ou passata</li><li>Aveia em flocos sem glúten certificada</li><li>Polvilho doce – 500g (receitas)</li><li>Fermento químico sem glúten</li><li>Cacau 100% em pó</li><li>Chocolate 70% sem glúten</li><li>Azeite extravirgem</li><li>Farinha de arroz (já tem)</li></ul></div><div class="shopcol"><div class="lbl terra">Oleaginosas e sementes</div><ul class="check"><li>Castanha-do-pará – 10 un</li><li>Amêndoas – 150g</li><li>Chia ou linhaça dourada – 200g</li><li>Pasta de amendoim integral</li></ul></div><div class="shopcol"><div class="lbl terra">Chás</div><ul class="check"><li>Chá verde ou matcha</li><li>Hortelã</li><li>Gengibre</li><li>Erva-doce</li><li>Rooibos</li><li>Camomila</li><li>Erva-cidreira</li></ul></div><div class="shopcol"><div class="lbl terra">Farmácia</div><ul class="check"><li>Metilfolato ou ácido fólico</li><li>Vitamina D3</li><li>Ômega-3 concentrado</li><li>Creatina monohidratada</li><li>Whey isolado sem glúten</li><li>Magnésio glicinato (opcional)</li></ul></div></div></section>
+<section class="meal brk" id="receitinhas-com-farinha-de-a"><div class="bar"><span class="bt">Receitinhas com farinha de arroz</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><path d="M12 54L56 30l12 10v20H12z" fill="#E8C690"/><path d="M12 54L56 30l12 10L24 64z" fill="#F1D9A8"/>
+  <path d="M12 54v8h12v-8" fill="#D4AE73"/><path d="M14 52L56 30l12 10" stroke="#C99A55" stroke-width="2" fill="none"/>
+  <path d="M30 46c3-2 6 0 9-2" stroke="#8C6A3F" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+  <circle cx="58" cy="24" r="6" fill="#F3E07A"/><path d="M58 18c-2-4 2-6 4-4" stroke="#7FA36B" stroke-width="2" fill="none"/></svg></span></div><p class="intro">Farinha de arroz sozinha deixa a massa seca e quebradiça. Por isso as receitas levam ovo, banana, iogurte ou polvilho, que dão liga e umidade. Use sempre fermento com “não contém glúten” no rótulo.</p><div class="recipe"><div class="rhead"><span class="rtitle">Bolo de banana</span><span class="rporc">Forma de 20 cm · 10 fatias · ≈ 140 kcal por fatia</span></div><div class="rgrid"><div><div class="lbl sage sm">Ingredientes</div><ul class="subs"><li>3 ovos</li><li>2 bananas bem maduras amassadas</li><li>2 colheres de sopa de óleo de coco derretido ou azeite suave (30ml)</li><li>1 xícara chá de farinha de arroz (150g)</li><li>1/2 xícara chá de aveia sem glúten em flocos finos (45g)</li><li>1 colher de chá de canela</li><li>1 colher de sopa de fermento químico sem glúten</li></ul></div><div><div class="lbl sage sm">Modo de preparo</div><ol class="steps"><li>Preaqueça o forno a 180 °C e unte a forma com óleo de coco e um pouco de farinha de arroz.</li><li>Bata no liquidificador os ovos, as bananas e o óleo até ficar liso.</li><li>Passe para uma tigela e misture a farinha de arroz, a aveia e a canela com uma espátula.</li><li>Junte o fermento por último, misturando delicadamente.</li><li>Asse por 30 a 35 minutos, até o palito sair limpo. Espere amornar para desenformar.</li></ol></div></div><div class="note sage sm">No plano: 1 fatia (50g) + 1 iogurte no lanche da tarde. Congela bem em fatias individuais por até 30 dias.</div></div><div class="recipe"><div class="rhead"><span class="rtitle">Torta de frango de liquidificador</span><span class="rporc">Forma de 20 cm · 6 pedaços · ≈ 320 kcal e 21g de proteína por pedaço</span></div><div class="rgrid"><div><div class="lbl sage sm">Ingredientes</div><ul class="subs"><li>Massa: 3 ovos</li><li>1 xícara chá de leite desnatado ou sem lactose (240ml)</li><li>2 colheres de sopa de azeite (30ml)</li><li>1 xícara chá de farinha de arroz (150g)</li><li>1/2 xícara chá de polvilho doce (60g)</li><li>1 colher de chá de sal e 1 colher de sopa de fermento sem glúten</li><li>Recheio: 300g de frango cozido e desfiado</li><li>1 tomate, 1/2 cebola, cheiro-verde e 2 colheres de sopa de requeijão light</li></ul></div><div><div class="lbl sage sm">Modo de preparo</div><ol class="steps"><li>Refogue a cebola, junte o frango, o tomate e o cheiro-verde. Desligue e misture o requeijão.</li><li>Bata no liquidificador os ovos, o leite, o azeite, a farinha de arroz, o polvilho e o sal. Junte o fermento e pulse só para misturar.</li><li>Em forma untada, coloque metade da massa, o recheio e cubra com o resto da massa.</li><li>Asse a 180 °C por 35 a 40 minutos, até dourar por cima.</li></ol></div></div><div class="note sage sm">No plano: 1 pedaço + salada à vontade no jantar (Opção 5). Na geladeira dura 3 dias.</div></div><div class="recipe"><div class="rhead"><span class="rtitle">Pão de frigideira</span><span class="rporc">1 unidade · ≈ 150 kcal e 8g de proteína</span></div><div class="rgrid"><div><div class="lbl sage sm">Ingredientes</div><ul class="subs"><li>1 ovo</li><li>2 colheres de sopa de farinha de arroz (20g)</li><li>1 colher de sopa de iogurte natural ou água (15g)</li><li>1 pitada de sal e orégano</li><li>1/2 colher de chá de fermento sem glúten</li></ul></div><div><div class="lbl sage sm">Modo de preparo</div><ol class="steps"><li>Misture tudo com um garfo até virar um creme liso.</li><li>Despeje em frigideira antiaderente pequena untada com um fio de azeite.</li><li>Tampe e cozinhe em fogo baixo por 3 minutos, vire e doure o outro lado por mais 2 minutos.</li><li>Abra ao meio e recheie com frango desfiado ou carne moída.</li></ol></div></div><div class="note sage sm">No plano: substitui a tapioca no café da manhã.</div></div><div class="recipe"><div class="rhead"><span class="rtitle">Bolinho de caneca de cacau</span><span class="rporc">1 unidade · ≈ 170 kcal e 8g de proteína</span></div><div class="rgrid"><div><div class="lbl sage sm">Ingredientes</div><ul class="subs"><li>1 ovo</li><li>1/2 banana amassada</li><li>1 colher de sopa de farinha de arroz (10g)</li><li>1 colher de sopa de cacau 100% (6g)</li><li>1/2 colher de chá de fermento sem glúten e canela</li></ul></div><div><div class="lbl sage sm">Modo de preparo</div><ol class="steps"><li>Amasse a banana na caneca e misture o ovo com um garfo.</li><li>Junte a farinha de arroz, o cacau e a canela. Misture bem.</li><li>Acrescente o fermento por último.</li><li>Micro-ondas em potência alta por 1 minuto e 30 segundos. Espere 2 minutos antes de comer.</li></ol></div></div><div class="note sage sm">No plano: é o doce planejado — vai no lugar do lanche da tarde, com 1 iogurte natural.</div></div></section>
+
+<section class="meal" id="pontos-de-atencao-e-proximos"><div class="keep"><div class="bar"><span class="bt">Pontos de atenção e próximos passos</span><span class="ill"><svg viewBox="0 0 80 80" aria-hidden="true"><rect x="18" y="12" width="44" height="56" rx="5" fill="#FFFFFF" stroke="#EDD5C2" stroke-width="2.5"/>
+  <path d="M26 30l4 4 8-8M26 46l4 4 8-8" stroke="#8A9E7F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M44 30h10M44 46h10" stroke="#C4845A" stroke-width="3" stroke-linecap="round"/></svg></span></div></div>
+<div class="card"><div class="lbl sage sm">Ritmo e meta</div><div>Peso atual 49,5 kg (IMC 22,0), desejado 46 kg (IMC 20,4), cerca de 0,3 a 0,4 kg por semana. Em fevereiro, mês das tentativas, sair do déficit: acrescentar cerca de 200 kcal por dia. Chegar ou não aos 46 kg não muda nada para a gestação, o IMC já é saudável.</div></div>
+<div class="card"><div class="lbl sage sm">Fim da tirzepatida</div><div>Se a fome voltar forte, aumente primeiro a proteína, as folhas e os legumes. Não pule refeições.</div></div>
+<div class="card"><div class="lbl sage sm">Relação com a comida</div><div>Culpa e comer para aliviar apareceram na anamnese. O doce está planejado para isso. Vale levar o tema à psicóloga junto com este plano.</div></div>
+<div class="card"><div class="lbl sage sm">Acompanhamento</div><div>Peso uma vez por semana, mesmo dia, em jejum. Cintura a cada 15 dias. Refazer exames em dezembro incluindo anti-TPO, antitireoglobulina, folato, magnésio, testosterona e SHBG. Ginecologista em 01/12, marcar a endocrinologista.</div></div>
+</section></main>
+<footer class="ftr"><span>Nutrição para Mentes Diversas · Projeto Ovinho de Dino</span><span>Nutricionista Marlua Leite Palheta · atualizado em 26/11/2026</span></footer>
+</div>
+<script>{
+const K='plano-lua-compras';let on=[];try{on=JSON.parse(localStorage.getItem(K)||'[]')}catch(e){}
+const items=[...document.querySelectorAll('ul.check li')];
+items.forEach((li,i)=>{if(on.includes(i))li.classList.add('on');li.tabIndex=0;li.setAttribute('role','checkbox');li.setAttribute('aria-checked',on.includes(i));
+const t=()=>{li.classList.toggle('on');li.setAttribute('aria-checked',li.classList.contains('on'));save()};li.addEventListener('click',t);li.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();t()}})});
+function save(){try{localStorage.setItem(K,JSON.stringify(items.map((l,i)=>l.classList.contains('on')?i:-1).filter(i=>i>=0)))}catch(e){}}
+document.getElementById('clr').addEventListener('click',()=>{items.forEach(l=>{l.classList.remove('on');l.setAttribute('aria-checked','false')});save()});
+
+const SUP=[["puran","07:30","Puran T4 12,5 mcg","em jejum, só com água"],["b12","08:30","Mecobe B12 1.000 mcg","no café da manhã"],
+["ferro","12:30","Neutrofer 300 mg","dia sim, dia não · com laranja ou acerola"],["folato","13:00","Metilfolato ou ácido fólico","dose da ginecologista"],
+["vitd","13:00","Vitamina D3 2.000 UI","no almoço"],["omega","13:00","Ômega-3 1 g EPA+DHA","no almoço"],["creat","16:00","Creatina 3 g","no lanche da tarde"],
+["mag","21:30","Magnésio glicinato","opcional · com chá calmante"]];
+const SK='plano-lua-suplementos';let H={};try{H=JSON.parse(localStorage.getItem(SK)||'{}')||{}}catch(e){}
+const dkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=dkey(new Date());const req=SUP.filter(x=>x[0]!=='mag'&&x[0]!=='ferro').map(x=>x[0]);
+const tick='<svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ck=document.getElementById('ck');
+function lastFerro(){const ds=Object.keys(H).filter(k=>k<today&&(H[k]||[]).includes('ferro')).sort();return ds.length?ds[ds.length-1].split('-').reverse().slice(0,2).join('/'):''}
+function render(){const on=H[today]||[];const lf=lastFerro();
+ck.innerHTML=SUP.map(([id,t,n,sub])=>{const extra=id==='ferro'&&lf?' · último: '+lf:'';return '<li tabindex="0" role="checkbox" aria-checked="'+on.includes(id)+'" data-id="'+id+'" class="'+(on.includes(id)?'on':'')+'"><span class="ckt">'+t+'</span><span class="ckn">'+n+'<small>'+sub+extra+'</small></span><span class="box">'+tick+'</span></li>'}).join('');
+const done=req.filter(i=>on.includes(i)).length;document.getElementById('ckcount').textContent=done+' de '+req.length+' tomados';
+const d=new Date();document.getElementById('ckdate').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit'});
+const days=[];for(let i=6;i>=0;i--){const x=new Date();x.setDate(x.getDate()-i);days.push(x)}
+document.getElementById('week').innerHTML=days.map(x=>{const k=dkey(x),o=H[k]||[],p=Math.round(100*req.filter(i=>o.includes(i)).length/req.length);return '<span class="wd" title="'+p+'%"><i style="--p:'+p+'%"></i>'+x.toLocaleDateString('pt-BR',{weekday:'narrow'})+'</span>'}).join('')}
+function toggle(id){const on=new Set(H[today]||[]);on.has(id)?on.delete(id):on.add(id);H[today]=[...on];
+const keep=Object.keys(H).sort().slice(-60);H=Object.fromEntries(keep.map(k=>[k,H[k]]));try{localStorage.setItem(SK,JSON.stringify(H))}catch(e){}render()}
+ck.addEventListener('click',e=>{const li=e.target.closest('li');if(li)toggle(li.dataset.id)});
+ck.addEventListener('keydown',e=>{const li=e.target.closest('li');if(li&&(e.key===' '||e.key==='Enter')){e.preventDefault();toggle(li.dataset.id);ck.querySelector('[data-id="'+li.dataset.id+'"]').focus()}});
+render();
+for(const c of document.querySelectorAll('.stack td')){let i=0,p=c;while(p=p.previousElementSibling)i++;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}
+}</script></body></html>
